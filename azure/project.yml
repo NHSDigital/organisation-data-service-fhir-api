@@ -1,0 +1,8 @@
+variables:
+  - group: status-endpoint
+  - name: service_name
+    value: organisation-data-service-fhir-api
+  - name: short_service_name
+    value: odsfa
+  - name: service_base_path
+    value: organisation-data-service-fhir-api
