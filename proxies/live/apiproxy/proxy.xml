@@ -1,4 +1,0 @@
-<APIProxy name="odsfa">
-  <!-- This is the root of the application -->
-  <Description>"organisation-data-service-fhir-api"</Description>
-</APIProxy>
