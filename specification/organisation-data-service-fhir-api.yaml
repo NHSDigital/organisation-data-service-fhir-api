@@ -6,27 +6,97 @@ info:
   version: 'Computed and injected at build time by `scripts/set_version.py`'
   description: |
     ## Overview
-    Add a fully fledged description here with markdown syntax.
-    For help completing the content of your API spec, see our guidance on the minimum standard (bronze) details 
-    to include [here](https://nhsd-confluence.digital.nhs.uk/display/APM/Writing+a+bronze+API+cover+page). You should also base your content on our exemplar API - [PDS FHIR](https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir).
+    Use this API to access a reduced dataset of health and social care organisations in England and Wales, such as trusts or GP practices, using our [Organisation Data Service (ODS)](https://https://digital.nhs.uk/services/organisation-data-service). This FHIR API contains a reduced dataset, most useful for helping with transactions, while the [ODS ORD API](http://https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-ord) contains the full dataset from ODS.
+    
+    You can search for information about an organisation using one or more of their:
+    - ODS code
+    - last updated date
+    - name
+    - active or inactive status
+    - orgnisation's role or primary role, such as [trusts or GP practices](http://https://developer.nhs.uk/apis/ods/restfulapis_identification_organization.html#tokenods-org-role)
+    
+    You can also limit the number of results returned, or just request a count of the number of search results.
+    For more details, see the [Introduction to FHIR® ODS Lookup API](http://https://developer.nhs.uk/apis/ods/index.html)
+    
+    You cannot:
+    - access the full dataset from ODS
+    - search for an organisation with an address
+    
+    An ODS code is a unique identification codes for an organisation that interact with any area of the NHS. This API returns the following reduced dataset of an organisation, when searched with an ODS code:
+    
+    - organisation - ODS code, name, open date, close  date, last change date and status if active or inactive
+    - address - house or flat number, line 1, line 2, line 3, town, postcode and country
+    - contacts - email, website, telephone and fax
+    - roles - primary and non-primary roles
+   
+    For an alternative API that returns full dataset, see Related APIs below.
+    
     ## Who can use this API
-    To be completed.
+    This API can only be used to support the delivery of health and social care.
+    
     ## Related APIs
-    To be completed.
+    The following API also gives access to the Organisation Data Service:
+    - [ODS Organisation Reference Data (ORD) API](https://https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-ord) - use this API to access the full dataset from ODS.
+    To choose which API best suits your needs, see the [Benefits of the ODS API suite](https://https://digital.nhs.uk/services/organisation-data-service/organisation-data-service-apis/api-technical-guides/guidance-for-developers/apis-for-the-organisation-data-service#benefits-of-the-ods-api-suite).
+    
+    The following API is also related to this API:
+    - [Spine Directory Service - FHIR API](https://https://digital.nhs.uk/developer/api-catalogue/spine-directory-service-fhir) - use this API to access ASID information and messaging endpoint details in the Spine Directory Service (SDS) using our FHIR-conformant API.
+    
     ## API status and roadmap
-    To be completed.
+    This API is [in production](https://https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses).
+    To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://https://nhs-digital-api-management.featureupvote.com/?order=popular&filter=allexceptdone&tag=ods-api#controls).
+    If you have any other queries, [contact us](https://https://digital.nhs.uk/developer/help-and-support).
+    
     ## Service level
-    To be completed.
+    This API is a bronze service, meaning it is operational and supported only during business hours (8am to 6pm), Monday to Friday excluding bank holidays.
+    For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
+    
     ## Technology
-    To be completed.
+    This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#basic-rest).
+    
+    It also conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#fhir)global standard for health care data exchange. Specifically, it is based on the HL7 FHIR STU3 Messaging Implementation.
+    
+    You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules. In particular:
+    - resource names are capitalised, singular and in American English, for example`/Organization` not `/organisations`
+    - array names are singular, for example `line` not `lines` for address lines
+    - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
+    
+    There are [libraries and SDKs available](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir-libraries-and-sdks) to help with FHIR API integration.
+    
     ## Network access
-    To be completed.
+    This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
+    
     ## Security and authorisation
-    To be completed.
+    This API is [open-access](https://https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#open-access-apis), which means:
+    - we do not authenticate or authorise the calling application
+    - we do not authenticate or authorise the end user - they might not even be present
+    
+    We generally use open-access APIs for public data, where security is not a concern. Our open-access APIs are generally RESTful APIs. For more details on how to access them, see our [open-access REST API tutorial](https://https://digital.nhs.uk/developer/guides-and-documentation/tutorials/open-access-rest-api-tutorial).
+    
     ## Environments and testing
-    To be completed.
+    
+    | Environments                | Base URLs                                                              |
+    | -----------------           | ---------------------------------------------------------------------- |
+    | User acceptance test (UAT)  |`https://uat.directory.spineservices.nhs.uk/STU3/`                      |
+    | Production                  |`https://directory.spineservices.nhs.uk/STU3/`                          |
+    
+    For example:
+    'https://uat.directory.spineservices.nhs.uk/STU3/Organization/RJY'
+    returns the reduced dataset for the organisation whose ODS code is RJY.
+    
     ## Onboarding
-    To be completed.
+    This API is open-access, and there is no onboarding process or assurance required.
+    
+    ## Interactions
+    The following table summarises the endpoints of this API.
+    
+    | Endpoint                    | Endpoint URLs                                                               |Description                                                                                     |
+    | -----------------           | ----------------------------------------------------------------------      |--------------------------------------                                                          |
+    | Read                        |`https://directory.spineservices.nhs.uk/STU3/Organization/[ODS code]`        |Returns the reduced dataset of a single organisation for the specified ODS code.                |
+    | Search                      |`https://directory.spineservices.nhs.uk/STU3/Organization?[SearchParameters]`|Returns a summary of multiple organisations when searched with one or many search parameters.   | 
+    
+    For details on the general structure of the interactions, see [FHIR](https://https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#fhir).
+    
   contact:
     name: 'organisation-data-service-fhir-api API Support'
     url: 'https://digital.nhs.uk/developer/help-and-support'
