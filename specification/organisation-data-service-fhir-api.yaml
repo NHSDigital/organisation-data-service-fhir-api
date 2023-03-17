@@ -6,7 +6,7 @@ info:
   version: 'Computed and injected at build time by `scripts/set_version.py`'
   description: |
   
-  <div class="nhsd-m-emphasis-box nhsd-m-emphasis-box--emphasis nhsd-!t-margin-bottom-6" aria-label="Highlighted Information">
+    <div class="nhsd-m-emphasis-box nhsd-m-emphasis-box--emphasis nhsd-!t-margin-bottom-6" aria-label="Highlighted Information">
         <div class="nhsd-a-box nhsd-a-box--border-blue">
             <div class="nhsd-m-emphasis-box__image-box">
                 <figure class="nhsd-a-image">
