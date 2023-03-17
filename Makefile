@@ -31,12 +31,12 @@ publish: clean
 	npm run publish 2> /dev/null
 
 #Files to loop over in release
-_dist_include="poetry.lock poetry.toml pyproject.toml Makefile build/. tests"
+_dist_include="poetry.lock poetry.toml pyproject.toml Makefile build/."
 
 #Create /dist/ sub-directory and copy files into directory
 release: clean publish
 	mkdir -p dist
-	for f in $(_dist_include); do [ -f $$f ] && cp -r $$f dist; done
+	for f in $(_dist_include); do cp -r $$f dist; done
 
 test:
 	@echo no tests for spec-only API
