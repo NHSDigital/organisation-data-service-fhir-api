@@ -36,7 +36,7 @@ _dist_include="poetry.lock poetry.toml pyproject.toml Makefile build/. tests"
 #Create /dist/ sub-directory and copy files into directory
 release: clean publish
 	mkdir -p dist
-	for f in $(_dist_include); do cp -r $$f dist; done
+	for f in $(_dist_include); do [ -f $$f ] && cp -r $$f dist; done
 
 test:
 	@echo no tests for spec-only API
