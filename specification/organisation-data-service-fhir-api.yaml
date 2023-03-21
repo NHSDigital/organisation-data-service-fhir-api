@@ -23,7 +23,7 @@ info:
     </div> 
   
     ## Overview
-    Use this API to access a reduced dataset of health and social care organisations in England and Wales, such as trusts or GP practices, using the [Organisation Data Service (ODS)](https://cms.digital.nhs.uk/site/_cmsinternal/developer/api-catalogue/organisation-data-service-ord). This FHIR API contains a reduced dataset, most useful for transactions. To access the full ODS dataset, including data about succession (history) or relationships, use the [ODS ORD API](http://https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-ord).
+    Use this API to access a reduced dataset of health and social care organisations in England and Wales, such as trusts or GP practices, using the [Organisation Data Service (ODS)](https://digital.nhs.uk/services/organisation-data-service). This FHIR API contains a reduced dataset, most useful for transactions. To access the full ODS dataset, including data about succession (history) or relationships, use the [ODS ORD API](http://https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-ord).
     
     You can search for information about an organisation using one or more of their:
     - ODS code
@@ -31,7 +31,7 @@ info:
     - name
     - active or inactive status
     - postcode or city
-    - orgnisation's role or primary role, such as [trusts or GP practices](http://https://developer.nhs.uk/apis/ods/restfulapis_identification_organization.html#tokenods-org-role)
+    - orgnisation's role or primary role, such as [trusts or GP practices](https://developer.nhs.uk/apis/ods/restfulapis_identification_organization.html#tokenods-org-role)
     
     You can also limit the number of results returned, or just request a count of the number of search results.
     
@@ -48,15 +48,14 @@ info:
     - roles - primary and non-primary roles
    
     For more details, see the [Introduction to FHIR® ODS Lookup API](https://developer.nhs.uk/apis/ods/index.html).
-    To access the full ODS dataset, use the [ODS ORD API](https://https://cms.digital.nhs.uk/site/_cmsinternal/developer/api-catalogue/organisation-data-service-ord).
+    To access the full ODS dataset, use the [ODS ORD API](https://cms.digital.nhs.uk/site/_cmsinternal/developer/api-catalogue/organisation-data-service-ord).
     
     <section class="nhsd-m-emphasis-box nhsd-m-emphasis-box--important nhsd-!t-margin-bottom-6" aria-label="Important Information">
         <div class="nhsd-a-box nhsd-a-box--border-yellow">
-
                 <div class="nhsd-m-emphasis-box__image-box">
                     <figure class="nhsd-a-image">
                         <picture class="nhsd-a-image__picture">
-                                    <img src="//nhs-prod.global.ssl.fastly.net/svg-magic/binaries/content/gallery/icons/book open.svg?colour=231f20" alt="" style="object-fit:fill" />
+                            <img src="//nhs-prod.global.ssl.fastly.net/svg-magic/binaries/content/gallery/icons/book open.svg?colour=231f20" alt="" style="object-fit:fill" />
                         </picture>
                     </figure>
                 </div>
@@ -71,7 +70,7 @@ info:
     
     ## Related APIs
     The following API also gives access to the Organisation Data Service:
-    - [ODS Organisation Reference Data (ORD) API](https://https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-ord) - use this API to access the full ODS dataset
+    - [ODS Organisation Reference Data (ORD) API](https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-ord) - use this API to access the full ODS dataset
     
     The following API is also related to this API:
     - [Spine Directory Service - FHIR API](https://digital.nhs.uk/developer/api-catalogue/spine-directory-service-fhir) - use this API to access ASID information and messaging endpoint details in the Spine Directory Service (SDS).
@@ -101,7 +100,7 @@ info:
     This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
     
     ## Security and authorisation
-    This API is [open-access](https://https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#open-access-apis), which means:
+    This API is [open-access](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#open-access-apis), which means:
     - we do not authenticate or authorise the calling application
     - we do not authenticate or authorise the end user - they might not even be present
     
