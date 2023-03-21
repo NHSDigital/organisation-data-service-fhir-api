@@ -17,13 +17,13 @@ info:
             </div>
             <div class="nhsd-m-emphasis-box__content-box">
             <p class="nhsd-t-heading-s nhsd-t-word-break" id="emphasis-emphasis-30709f1f" data-uipath="website.contentblock.emphasis.heading">Rate limits</p>
-                <div data-uipath="website.contentblock.emphasis.content" class="nhsd-t-word-break"><p class="nhsd-t-body">This API is not designed for high volume usage - to ensure a good level of service you should aim to keep usage below 5 requests per second. We are working on increasing the capacity of the API. If you have an exceptional need for higher throughput, [contact us](https://https://digital.nhs.uk/developer/help-and-support) to discuss your options.</p></div>            
+                <div data-uipath="website.contentblock.emphasis.content" class="nhsd-t-word-break"><p class="nhsd-t-body">This API is not designed for high volume usage - to ensure a good level of service you should aim to keep usage below 5 requests per second. For more details, see [rate limits](https://https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#rate-limits). We are working on increasing the capacity of the API. If you have an exceptional need for higher throughput, [contact us](https://https://digital.nhs.uk/developer/help-and-support) to discuss your options.</p></div>            
             </div>
         </div>
     </div> 
   
     ## Overview
-    Use this API to access a reduced dataset of health and social care organisations in England and Wales, such as trusts or GP practices, using our [Organisation Data Service (ODS)](https://https://digital.nhs.uk/services/organisation-data-service). This FHIR API contains a reduced dataset, most useful for helping with transactions, while the [ODS ORD API](http://https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-ord) contains the full dataset from ODS.
+    Use this API to access a reduced dataset of health and social care organisations in England and Wales, such as trusts or GP practices, using the [Organisation Data Service (ODS)](https://digital.nhs.uk/services/organisation-data-service). This FHIR API contains a reduced dataset, most useful for transactions. To access the full ODS dataset, including data about succession (history) or relationships, use the [ODS ORD API](http://https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-ord).
     
     You can search for information about an organisation using one or more of their:
     - ODS code
@@ -31,31 +31,31 @@ info:
     - name
     - active or inactive status
     - postcode or city
-    - orgnisation's role or primary role, such as [trusts or GP practices](http://https://developer.nhs.uk/apis/ods/restfulapis_identification_organization.html#tokenods-org-role)
+    - orgnisation's role or primary role, such as [trusts or GP practices](https://developer.nhs.uk/apis/ods/restfulapis_identification_organization.html#tokenods-org-role)
     
     You can also limit the number of results returned, or just request a count of the number of search results.
-    For more details, see the [Introduction to FHIR® ODS Lookup API](http://https://developer.nhs.uk/apis/ods/index.html)
     
     You cannot:
-    - access the full dataset from ODS
-    - search for an organisation with an address
+    - access the full dataset from ODS, specifically no information about succession (history) or relationships
+    - search for an organisation using an address
     
-    An ODS code is a unique identification codes for an organisation that interact with any area of the NHS. This API returns the following reduced dataset of an organisation, when searched with an ODS code:
+    An ODS code is a unique identification code for an organisation that interacts with any area of the NHS. 
+    This API returns the following reduced dataset of an organisation, when searched with an ODS code:
     
-    - organisation - ODS code, name, open date, close  date, last change date and status if active or inactive
+    - organisation - ODS code, name, open date, close date, last change date and status if active or inactive
     - address - house or flat number, line 1, line 2, line 3, town, postcode and country
     - contacts - email, website, telephone and fax
     - roles - primary and non-primary roles
    
-    For an alternative API that returns full dataset, see [Related APIs](<a href="https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-fhir#related-apis">Related APIs</a> below.)
+    For more details, see the [Introduction to FHIR® ODS Lookup API](https://developer.nhs.uk/apis/ods/index.html).
+    To access the full ODS dataset, use the [ODS ORD API](https://cms.digital.nhs.uk/site/_cmsinternal/developer/api-catalogue/organisation-data-service-ord).
     
     <section class="nhsd-m-emphasis-box nhsd-m-emphasis-box--important nhsd-!t-margin-bottom-6" aria-label="Important Information">
         <div class="nhsd-a-box nhsd-a-box--border-yellow">
-
                 <div class="nhsd-m-emphasis-box__image-box">
                     <figure class="nhsd-a-image">
                         <picture class="nhsd-a-image__picture">
-                                    <img src="//nhs-prod.global.ssl.fastly.net/svg-magic/binaries/content/gallery/icons/book open.svg?colour=231f20" alt="" style="object-fit:fill" />
+                            <img src="//nhs-prod.global.ssl.fastly.net/svg-magic/binaries/content/gallery/icons/book open.svg?colour=231f20" alt="" style="object-fit:fill" />
                         </picture>
                     </figure>
                 </div>
@@ -70,11 +70,10 @@ info:
     
     ## Related APIs
     The following API also gives access to the Organisation Data Service:
-    - [ODS Organisation Reference Data (ORD) API](https://https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-ord) - use this API to access the full dataset from ODS.
-    To choose which API best suits your needs, see the [Benefits of the ODS API suite](https://digital.nhs.uk/services/organisation-data-service/organisation-data-service-apis/api-technical-guides/guidance-for-developers/apis-for-the-organisation-data-service#benefits-of-the-ods-api-suite).
+    - [ODS Organisation Reference Data (ORD) API](https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-ord) - use this API to access the full ODS dataset
     
     The following API is also related to this API:
-    - [Spine Directory Service - FHIR API](https://digital.nhs.uk/developer/api-catalogue/spine-directory-service-fhir) - use this API to access ASID information and messaging endpoint details in the Spine Directory Service (SDS) using our FHIR-conformant API.
+    - [Spine Directory Service - FHIR API](https://digital.nhs.uk/developer/api-catalogue/spine-directory-service-fhir) - use this API to access ASID information and messaging endpoint details in the Spine Directory Service (SDS).
     
     ## API status and roadmap
     This API is [in production](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses).
@@ -101,7 +100,7 @@ info:
     This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
     
     ## Security and authorisation
-    This API is [open-access](https://https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#open-access-apis), which means:
+    This API is [open-access](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#open-access-apis), which means:
     - we do not authenticate or authorise the calling application
     - we do not authenticate or authorise the end user - they might not even be present
     
