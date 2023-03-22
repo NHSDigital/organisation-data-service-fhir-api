@@ -17,7 +17,7 @@ info:
             </div>
             <div class="nhsd-m-emphasis-box__content-box">
             <p class="nhsd-t-heading-s nhsd-t-word-break" id="emphasis-emphasis-30709f1f" data-uipath="website.contentblock.emphasis.heading">Rate limits</p>
-                <div data-uipath="website.contentblock.emphasis.content" class="nhsd-t-word-break"><p class="nhsd-t-body">This API is not designed for high volume usage - to ensure a good level of service you should aim to keep usage below 5 requests per second. For more details, see <a href="http://digital.nhs.uk/developer/guides-and-documentation/reference-guide#rate-limits">rate limits</a>. We are working on increasing the capacity of the API. If you have an exceptional need for higher throughput, [contact us](https://https://digital.nhs.uk/developer/help-and-support) to discuss your options.</p></div>            
+                <div data-uipath="website.contentblock.emphasis.content" class="nhsd-t-word-break"><p class="nhsd-t-body">This API is not designed for high volume usage - to ensure a good level of service you should aim to keep usage below 5 requests per second. For more details, see <a href="https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#rate-limits">rate limits</a>. We are working on increasing the capacity of the API. If you have an exceptional need for higher throughput, [contact us](https://https://digital.nhs.uk/developer/help-and-support) to discuss your options.</p></div>            
             </div>
         </div>
     </div> 
