@@ -17,7 +17,7 @@ info:
             </div>
             <div class="nhsd-m-emphasis-box__content-box">
             <p class="nhsd-t-heading-s nhsd-t-word-break" id="emphasis-emphasis-30709f1f" data-uipath="website.contentblock.emphasis.heading">Rate limits</p>
-                <div data-uipath="website.contentblock.emphasis.content" class="nhsd-t-word-break"><p class="nhsd-t-body">This API is not designed for high volume usage - to ensure a good level of service you should aim to keep usage below 5 requests per second. For more details, see <a href="https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#rate-limits">rate limits</a>. We are working on increasing the capacity of the API. If you have an exceptional need for higher throughput, [contact us](https://https://digital.nhs.uk/developer/help-and-support) to discuss your options.</p></div>            
+                <div data-uipath="website.contentblock.emphasis.content" class="nhsd-t-word-break"><p class="nhsd-t-body">This API is not designed for high volume usage - to ensure a good level of service you should aim to keep usage below 5 requests per second. For more details, see <a href="https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#rate-limits">rate limits</a>. We are working on increasing the capacity of the API. If you have an exceptional need for higher throughput, <a href="https://digital.nhs.uk/developer/help-and-support">contact us</a> to discuss your options.</p></div>            
             </div>
         </div>
     </div> 
@@ -125,6 +125,67 @@ info:
     - 200 to 299 if it succeeded, including code 202 if it was accepted by an API that needs to wait for further action
     - 400 to 499 if it failed because of a client error by your application
     - 500 to 599 if it failed because of an error on our server
+    
+ paths:
+  /Organization:
+    get:
+      summary: Get a single organization for the specified id (ODS code).
+      
+      operationId: get-single-organisation-id
+      description: |
+        Given a specified id (ODS code), get a single orgainsation. 
+        
+        ## Sandbox testing
+        You can test the following scenarios in our sandbox environment:
+        | Scenario                      | Request                                                              | Response                                   |
+        | ----------------------------- | -------------------------------------------------------------------- | ------------------------------------------ |
+        | COVID-19 test history found   | `patient.identifier`=`https://fhir.nhs.uk/Id/nhs-number\|9000000009` | HTTP Status 200 with test results data in response body |
+        | No test results found         | `patient.identifier`=`https://fhir.nhs.uk/Id/nhs-number\|9000000033` | HTTP Status 200 with empty bundle in response body |
+        | Bad Request                   | `patient.identifier`= anything else                                  | HTTP Status 400 Bad Request |
+        
+        You can try out the sandbox using the 'Try this API' feature on this page.
+      parameters:
+        - in: header
+          name: X-Correlation-ID
+          required: false
+          description: |
+            An optional ID which you can use to track transactions across multiple systems. It can take any value, but we recommend avoiding `.` characters.
+            Mirrored back in a response header.
+          schema:
+            type: string
+            example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
+        - in: query
+          name: organization.id
+          description: |
+            Returns a single Organization for the specified id (ODS code).
+            Expressed as `<type>|<value>` where `<type>` must be `https://fhir.nhs.uk/Id/nhs-number` and `<value>` must be a [valid NHS number](https://www.datadictionary.nhs.uk/attributes/nhs_number.html).
+          required: true
+          schema:
+            type: string
+            example: 'TBC'
+        - in: query
+          name: _format
+          description: Can take xml, json, text/json, text/xml, application/json and application/xml as arguments. If this parameter is not supplied, the format will default to JSON.
+          required: false
+          schema:
+            type: string
+            example: 'TBC'
+
+      responses:
+        '200':
+          description: Valid request that returns organization history found that match the search criteria (which may be 0).
+          headers:
+            X-Correlation-Id:
+              schema:
+                type: string
+                example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
+              description: 'The X-Correlation-ID from the request header, if supplied, mirrored back.'
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "components/schemas/observation-bundle-schema.yaml"
+              example:
+                $ref: "components/examples/observation-read-example.json"
     
     ## Additional guidance
     For more details, see [Introduction to FHIR ODS Lookup API](https://developer.nhs.uk/apis/ods/index.html).
