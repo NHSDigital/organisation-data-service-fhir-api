@@ -39,7 +39,7 @@ info:
     - access the full dataset from ODS, specifically no information about succession (history) or relationships
     - search for an organisation using an address
     
-    An ODS code is a unique identification code for an organisation that interacts with any area of the NHS. 
+    An ODS code is a unique identification code for an organisation that interacts with any area of the NHS. For a full list of the organisation types available, see [CSV downloads](https://digital.nhs.uk/services/organisation-data-service/export-data-files/csv-downloads).
     This API returns the following reduced dataset of an organisation, when searched with an ODS code:
     
     - organisation - ODS code, name, open date, close date, last change date and status if active or inactive
@@ -186,10 +186,7 @@ info:
                 $ref: "components/schemas/observation-bundle-schema.yaml"
               example:
                 $ref: "components/examples/observation-read-example.json"
-    
-    ## Additional guidance
-    For more details, see [Introduction to FHIR ODS Lookup API](https://developer.nhs.uk/apis/ods/index.html).
-        
+                
   contact:
     name: 'organisation-data-service-fhir-api API Support'
     url: 'https://digital.nhs.uk/developer/help-and-support'
