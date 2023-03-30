@@ -126,7 +126,7 @@ info:
     - 400 to 499 if it failed because of a client error by your application
     - 500 to 599 if it failed because of an error on our server
     
- servers:
+servers:
   - url: 'https://sandbox.api.service.nhs.uk/organisation-data-service-fhir-api'
     description: Sandbox environment.
   - url: 'https://int.api.service.nhs.uk/organisation-data-service-fhir-api'
@@ -134,7 +134,7 @@ info:
   - url: 'https://api.service.nhs.uk/organisation-data-service-fhir-api'
     description: Production environment.   
     
- paths:
+paths:
   /Organization:
     get:
       summary: Get a single organization for the specified id (ODS code).
