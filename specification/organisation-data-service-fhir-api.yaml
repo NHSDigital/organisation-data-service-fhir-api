@@ -135,7 +135,7 @@ servers:
     description: Production environment.   
     
 paths:
-  `/Organization`:
+  /Organization:
     get:
       summary: Get a single organization for the specified id (ODS code).
       
