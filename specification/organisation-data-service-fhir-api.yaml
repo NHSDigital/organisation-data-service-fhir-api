@@ -189,13 +189,13 @@ paths:
                 example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
               description: 'The X-Correlation-ID from the request header, if supplied, mirrored back.'
           content:
-#           application/fhir+json:
+            application/fhir+json:
               schema:
 #               $ref: "#/components/schemas/observation-bundle-schema"
               example:
                 $ref: "#/components/examples/observation-read-example"
                 
-#contact:
+contact:
   name: 'organisation-data-service-fhir-api API Support'
   url: 'https://digital.nhs.uk/developer/help-and-support'
   email: api.management@nhs.net
