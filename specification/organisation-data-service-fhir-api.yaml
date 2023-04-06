@@ -195,7 +195,7 @@ paths:
               example:
                 $ref: "#/components/examples/observation-read-example"
                 
-  contact:
-#   name: 'organisation-data-service-fhir-api API Support'
-#   url: 'https://digital.nhs.uk/developer/help-and-support'
-#   email: api.management@nhs.net
+contact:
+  name: 'organisation-data-service-fhir-api API Support'
+  url: 'https://digital.nhs.uk/developer/help-and-support'
+  email: api.management@nhs.net
