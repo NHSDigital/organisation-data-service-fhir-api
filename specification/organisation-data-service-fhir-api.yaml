@@ -191,9 +191,9 @@ paths:
           content:
             application/fhir+json:
               schema:
-#               $ref: "#/components/schemas/observation-bundle-schema"
+                $ref: "components/schemas/observation-bundle-schema.json"
               example:
-                $ref: "#/components/examples/observation-read-example"
+                $ref: "components/examples/read-example.json"
                 
 contact:
   name: 'organisation-data-service-fhir-api API Support'
