@@ -249,7 +249,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                $ref: "#/components/schemas/observation-bundle-schema.json"
+                $ref: "immunisation-history-api/specification/components/schemas/bundle.yaml"
               example:
                 $ref: "components/examples/read-example.json"
 
