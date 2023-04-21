@@ -183,7 +183,7 @@ paths:
                 $ref: ""
               example:
                 $ref: "components/examples/read-example.json"
-/Search:
+  /Search:
     get:
       summary: Returns a Bundle of all Organization resources that match the specified search criteria.
       
