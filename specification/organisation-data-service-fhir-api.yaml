@@ -167,6 +167,48 @@ paths:
           required: true
           schema:
             type: string
+            example: 'TBC'                            
+      responses:
+        '200':
+          description: Valid request that returns organization history found that match the search criteria (which may be 0).
+          headers:
+            X-Correlation-Id:
+              schema:
+                type: string
+                example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
+              description: 'The X-Correlation-ID from the request header, if supplied, mirrored back.'
+          content:
+            application/fhir+json:
+              schema:
+                $ref: ""
+              example:
+                $ref: "components/examples/read-example.json"
+/Search:
+    get:
+      summary: Returns a Bundle of all Organization resources that match the specified search criteria.
+      
+      operationId: get-organization-resources
+      description: |
+        The search parameters are in the table below. The parameters can be used independently or in combination to help refine the search results returned. This section outlines the search parameter syntax used, with some examples provided.
+        
+      parameters:
+        - in: header
+          name: X-Correlation-ID
+          required: false
+          description: |
+            An optional ID which you can use to track transactions across multiple systems. It can take any value, but we recommend avoiding `.` characters.
+            Mirrored back in a response header.
+          schema:
+            type: string
+            example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
+        - in: query
+          name: _id
+          description: |
+            The logical id of the resource (ODS Code)
+            Expressed as `<type>|<value>` where `<type>` must be `https://fhir.nhs.uk/Id/nhs-number` and `<value>` must be a [valid NHS number](https://www.datadictionary.nhs.uk/attributes/nhs_number.html).
+          required: true
+          schema:
+            type: string
             example: 'TBC'
         - in: query
           name: _lastUpdated
@@ -253,6 +295,4 @@ paths:
                 $ref: ""
               example:
                 $ref: "components/examples/read-example.json"
-
-
 
