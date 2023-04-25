@@ -1,0 +1,135 @@
+{
+    "resourceType": "Bundle",
+    "id": "2fe446ff-6d8e-492c-838a-10007976ae17",
+    "meta": {
+        "lastUpdated": "2018-05-01T10:21:05+00:00"
+    },
+    "type": "searchset",
+    "total": "95",
+    "link": [
+        {
+            "relation": "self",
+            "url": "https://directory.spineservices.nhs.uk/STU3/Organization?name=leeds&_count=1&_page=1"
+        },
+        {
+            "relation": "first",
+            "url": "https://directory.spineservices.nhs.uk/STU3/Organization?name=leeds&_count=1&_page=1"
+        },
+        {
+            "relation": "last",
+            "url": "https://directory.spineservices.nhs.uk/STU3/Organization?name=leeds&_count=1&_page=95"
+        },
+        {
+            "relation": "next",
+            "url": "https://directory.spineservices.nhs.uk/STU3/Organization?name=leeds&_count=1&_page=2"
+        }
+    ],
+    "entry": [
+        {
+            "fullUrl": "https://directory.spineservices.nhs.uk/STU3/Organization/03CAR",
+            "resource": {
+                "resourceType": "Organization",
+                "id": "03CAR",
+                "meta": {
+                    "lastUpdated": "2018-04-19T00:00:00+00:00",
+                    "profile": "https://fhir.nhs.uk/STU3/StructureDefinition/ODSAPI-Organization-1"
+                },
+                "extension": [
+                    {
+                        "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-ActivePeriod-1",
+                        "valuePeriod": {
+                            "extension": [
+                                {
+                                    "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-DateType-1",
+                                    "valueString": "Operational"
+                                }
+                            ],
+                            "start": "2013-10-01"
+                        }
+                    },
+                    {
+                        "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-ActivePeriod-1",
+                        "valuePeriod": {
+                            "extension": [
+                                {
+                                    "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-DateType-1",
+                                    "valueString": "Legal"
+                                }
+                            ],
+                            "start": "2013-10-01",
+                            "end": "2018-03-31"
+                        }
+                    },
+                    {
+                        "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-OrganizationRole-1",
+                        "extension": [
+                            {
+                                "url": "role",
+                                "valueCoding": {
+                                    "system": "https://directory.spineservices.nhs.uk/STU3/CodeSystem/ODSAPI-OrganizationRole-1",
+                                    "code": "99",
+                                    "display": "CLINICAL COMMISSIONING GROUP SITE"
+                                }
+                            },
+                            {
+                                "url": "primaryRole",
+                                "valueBoolean": true
+                            },
+                            {
+                                "url": "activePeriod",
+                                "valuePeriod": {
+                                    "extension": [
+                                        {
+                                            "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-DateType-1",
+                                            "valueString": "Operational"
+                                        }
+                                    ],
+                                    "start": "2013-10-01"
+                                }
+                            },
+                            {
+                                "url": "activePeriod",
+                                "valuePeriod": {
+                                    "extension": [
+                                        {
+                                            "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-DateType-1",
+                                            "valueString": "Legal"
+                                        }
+                                    ],
+                                    "start": "2013-10-01",
+                                    "end": "2018-03-31"
+                                }
+                            },
+                            {
+                                "url": "status",
+                                "valueString": "Active"
+                            }
+                        ]
+                    }
+                ],
+                "identifier": {
+                    "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                    "value": "03CAR"
+                },
+                "active": true,
+                "type": {
+                    "coding": {
+                        "system": "https://fhir.nhs.uk/STU3/CodeSystem/ODSAPI-OrganizationRecordClass-1",
+                        "code": "2",
+                        "display": "HSCSite"
+                    }
+                },
+                "name": "LEEDS WEST CCG (HQ)",
+                "address": {
+                    "line": [
+                        "UNITS 2-4 WIRA BUSINESS PARK"
+                    ],
+                    "city": "LEEDS",
+                    "district": "WEST YORKSHIRE",
+                    "postalCode": "LS16 6EB",
+                    "country": "ENGLAND"
+                }
+            }
+        }
+    ]
+}
