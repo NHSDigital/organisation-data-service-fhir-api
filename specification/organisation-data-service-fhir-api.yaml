@@ -27,7 +27,9 @@ info:
     </div> 
   
     ## Overview
-    Use this API to access a reduced dataset of health and social care organisations in England and Wales, such as trusts or GP practices, using the [Organisation Data Service (ODS)](https://digital.nhs.uk/services/organisation-data-service). This FHIR API contains a reduced dataset, most useful for transactions. To access the full ODS dataset, including data about succession (history) or relationships, use the [ODS ORD API](http://https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-ord).
+    Use this API to access a reduced dataset of health and social care organisations in England and Wales, such as trusts or GP practices, using the [Organisation Data Service (ODS)](https://digital.nhs.uk/services/organisation-data-service). 
+    
+    This FHIR API contains a reduced dataset, most useful for transactions. To access the full ODS dataset, including data about succession (history) or relationships, use the [ODS ORD API](http://https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-ord).
     
     You can search for information about an organisation using one or more of their:
     - ODS code
@@ -44,6 +46,7 @@ info:
     - search for an organisation using an address
     
     An ODS code is a unique identification code for an organisation that interacts with any area of the NHS. For a full list of the organisation types available, see [CSV downloads](https://digital.nhs.uk/services/organisation-data-service/export-data-files/csv-downloads).
+    
     This API returns the following reduced dataset of an organisation, when searched with an ODS code:
     
     - organisation - ODS code, name, open date, close date, last change date and status if active or inactive
@@ -51,7 +54,6 @@ info:
     - contacts - email, website, telephone and fax
     - roles - primary and non-primary roles
    
-    For more details, see the [Introduction to FHIR® ODS Lookup API](https://developer.nhs.uk/apis/ods/index.html).
     To access the full ODS dataset, use the [ODS ORD API](https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-ord).
     
     <section class="nhsd-m-emphasis-box nhsd-m-emphasis-box--important nhsd-!t-margin-bottom-6" aria-label="Important Information">
@@ -81,11 +83,14 @@ info:
     
     ## API status and roadmap
     This API is [in production](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses).
+    
     To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?order=popular&filter=allexceptdone&tag=ods-api#controls).
+    
     If you have any other queries, [contact us](https://digital.nhs.uk/developer/help-and-support).
     
     ## Service level
     This API is a bronze service, meaning it is operational and supported only during business hours (8am to 6pm), Monday to Friday excluding bank holidays.
+    
     For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
     
     ## Technology
@@ -94,7 +99,7 @@ info:
     It also conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#fhir) global standard for health care data exchange. Specifically, it is based on the HL7 FHIR STU3 Messaging Implementation.
     
     You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules. In particular:
-    - resource names are capitalised, singular and in American English, for example`/Organization` not `/organisations`
+    - resource names are capitalised, singular and in American English, for example `/Organization` not `/organisations`
     - array names are singular, for example `line` not `lines` for address lines
     - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
     
@@ -118,8 +123,11 @@ info:
     | Production                  |`https://directory.spineservices.nhs.uk/STU3/`                          |
     
     For example:
-    'https://uat.directory.spineservices.nhs.uk/STU3/Organization/RJY'
+    `https://uat.directory.spineservices.nhs.uk/STU3/Organization/RJY/`
     returns the reduced dataset for the organisation whose ODS code is RJY.
+    
+    ### Integration testing
+    You can use the UAT environment to perform your integration testing.
     
     ## Onboarding
     This API is open-access, and there is no onboarding process or assurance required.
@@ -185,7 +193,7 @@ paths:
                 $ref: "components/examples/read-example.json"
   /Search:
     get:
-      summary: Returns a Bundle of all Organization resources that match the specified search criteria.
+      summary: Returns a Bundle of all Organization resources that match the specified search criteria
       
       operationId: get-organization-resources
       description: |
