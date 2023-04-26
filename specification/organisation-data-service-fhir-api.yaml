@@ -155,7 +155,7 @@ paths:
       
       operationId: get-single-organisation-id
       description: |
-        Given a specified id (ODS code), get a single orgainsation. 
+        Use this endpoint to return a single Organization for the specified id (ODS code).
         
       parameters:
         - in: header
@@ -197,7 +197,7 @@ paths:
       
       operationId: get-organization-resources
       description: |
-        The search parameters are in the table below. The parameters can be used independently or in combination to help refine the search results returned. This section outlines the search parameter syntax used, with some examples provided.
+        Use this endpoint to help refine the search results returned. This section outlines the search parameter syntax used, with some examples provided.
         
       parameters:
         - in: header
