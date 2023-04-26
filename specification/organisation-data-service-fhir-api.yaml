@@ -37,7 +37,7 @@ info:
     - name
     - active or inactive status
     - postcode or city
-    - orgnisation's role or primary role, such as trusts or GP practices
+    - organisation's role or primary role, such as trusts or GP practices
     
     You can also limit the number of results returned, or just request a count of the number of search results.
     
