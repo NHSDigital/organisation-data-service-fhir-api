@@ -149,28 +149,19 @@ servers:
     description: Production environment.   
     
 paths:
-  /Organization:
+  /Organization/ID:
     get:
-      summary: Get a single organization for the specified id (ODS code)
+      summary: Serach for an organization ID
       
-      operationId: get-single-organisation-id
+      operationId: get-single-organization-id
       description: |
-        Use this endpoint to return a single Organization for the specified id (ODS code).
+        Use this endpoint to return a single organization for the specified id (ODS code).
         
       parameters:
-        - in: header
-          name: X-Correlation-ID
-          required: false
-          description: |
-            An optional ID which you can use to track transactions across multiple systems. It can take any value, but we recommend avoiding `.` characters.
-            Mirrored back in a response header.
-          schema:
-            type: string
-            example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
         - in: query
           name: _id
           description: |
-            The logical id of the resource (ODS Code)
+            The logical id of the resource (ODS code).
             Expressed as `<type>|<value>` where `<type>` must be `https://fhir.nhs.uk/Id/nhs-number` and `<value>` must be a [valid NHS number](https://www.datadictionary.nhs.uk/attributes/nhs_number.html).
           required: true
           schema:
@@ -191,28 +182,19 @@ paths:
                 $ref: ""
               example:
                 $ref: "components/examples/read-example.json"
-  /Search:
+  /Organization:
     get:
-      summary: Returns a Bundle of all Organization resources that match the specified search criteria
+      summary: Search for an organisation
       
       operationId: get-organization-resources
       description: |
         Use this endpoint to help refine the search results returned. This section outlines the search parameter syntax used, with some examples provided.
         
       parameters:
-        - in: header
-          name: X-Correlation-ID
-          required: false
-          description: |
-            An optional ID which you can use to track transactions across multiple systems. It can take any value, but we recommend avoiding `.` characters.
-            Mirrored back in a response header.
-          schema:
-            type: string
-            example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
         - in: query
           name: _id
           description: |
-            The logical id of the resource (ODS Code)
+            The logical id of the resource (ODS code).
             Expressed as `<type>|<value>` where `<type>` must be `https://fhir.nhs.uk/Id/nhs-number` and `<value>` must be a [valid NHS number](https://www.datadictionary.nhs.uk/attributes/nhs_number.html).
           required: true
           schema:
@@ -227,7 +209,7 @@ paths:
             example: 'gt2017-04-01'
         - in: query
           name: identifier
-          description: The identifier for the organisation (ODS Code).
+          description: The identifier for the organisation (ODS code).
           required: false
           schema:
             type: string
