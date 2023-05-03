@@ -155,6 +155,7 @@ paths:
       
       operationId: get-single-organization-id
       description: |
+        ## Overview
         Use this endpoint to return a single organization for the specified id (ODS code).
         
       parameters:
@@ -162,7 +163,7 @@ paths:
           name: _id
           description: |
             The logical id of the resource (ODS code).
-            Expressed as `<type>|<value>` where `<type>` must be `https://fhir.nhs.uk/Id/nhs-number` and `<value>` must be a [valid NHS number](https://www.datadictionary.nhs.uk/attributes/nhs_number.html).
+            Must be a [valid NHS number](https://www.datadictionary.nhs.uk/attributes/nhs_number.html).
           required: true
           schema:
             type: string
@@ -188,7 +189,8 @@ paths:
       
       operationId: get-organization-resources
       description: |
-        Use this endpoint to help refine the search results returned. This section outlines the search parameter syntax used, with some examples provided.
+        ## Overview
+        Use this endpoint to return a bundle of Organization resources that match the specified search criteria.
         
       parameters:
         - in: query
