@@ -1,0 +1,21 @@
+{
+    "resourceType": "OperationOutcome",
+    "id": "82c75580-1702-469e-aec1-43034b48f060",
+    "meta": {
+        "profile": "https://fhir.nhs.uk/STU3/StructureDefinition/Spine-OperationOutcome-1"
+    },
+    "issue": [
+        {
+            "severity": "error",
+            "code": "invalid",
+            "details": {
+                "coding": {
+                    "system": "https://fhir.nhs.uk/STU3/CodeSystem/Spine-ErrorOrWarningCode-1",
+                    "code": "INVALID_PARAMETER",
+                    "display": "Invalid parameter"
+                }
+            },
+            "diagnostics": "Unknown argument found - nam"
+        }
+    ]
+}
