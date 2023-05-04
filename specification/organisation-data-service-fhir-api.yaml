@@ -176,7 +176,7 @@ paths:
               schema:
                 $ref: ""
               example:
-                $ref: "components/examples/read-example.json"
+                $ref: components/examples/read-example.json
   /Organization:
     get:
       summary: Search for an organisation
@@ -274,5 +274,5 @@ paths:
               schema:
                 $ref: ""
               example:
-                $ref: "components/examples/search-example.json"
+                $ref: components/examples/search-example.json
 
