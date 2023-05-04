@@ -171,12 +171,6 @@ paths:
       responses:
         '200':
           description: Valid request that returns organization history found that match the search criteria (which may be 0).
-          headers:
-            X-Correlation-Id:
-              schema:
-                type: string
-                example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
-              description: 'The X-Correlation-ID from the request header, if supplied, mirrored back.'
           content:
             application/fhir+json:
               schema:
@@ -275,12 +269,6 @@ paths:
       responses:
         '200':
           description: Valid request that returns organization history found that match the search criteria (which may be 0).
-          headers:
-            X-Correlation-Id:
-              schema:
-                type: string
-                example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
-              description: 'The X-Correlation-ID from the request header, if supplied, mirrored back.'
           content:
             application/fhir+json:
               schema:
