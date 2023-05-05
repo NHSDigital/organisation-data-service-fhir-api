@@ -262,6 +262,15 @@ paths:
                       "country": "ENGLAND"
                   }
               }
+              
+        '4XX':
+          description: |
+            An error occurred as follows:
+            
+            | HTTP status | Error code                 | Description |
+            | ----------- | -------------------------- | --------------------------------------------- |
+            | 404         | not-found                  | No record found.	|
+            
   /Organization:
     get:
       summary: Search for an organisation
