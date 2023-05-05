@@ -275,4 +275,23 @@ paths:
                 $ref: ""
               example:
                 $ref: components/examples/search-example.json
+        '4XX':
+          description: |
+            An error occurred as follows:
+            
+            | HTTP status | Error code                 | Description |
+            | ----------- | -------------------------- | --------------------------------------------- |
+            | 404         | not-found                  | No record found.	|
+            | 400         | code-invalid      	       | Invalid code system. |
+            | 400         | code-invalid               | Invalid code value. |
+            | 400         | code-invalid               | Invalid identifier system.|
+            | 400         | code-invalid               | Invalid identifier value. |
+            | 400         | invalid                    | Invalid parameter.|
+            | 400         | invalid                    | An input field has an invalid value for its type.|
 
+          content:
+            application/fhir+json:
+              schema:
+                $ref: 'components/examples/error-example.json'
+              example:
+                resourceType: OperationOutcome
