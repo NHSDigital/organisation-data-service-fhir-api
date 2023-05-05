@@ -163,11 +163,10 @@ paths:
           name: _id
           description: |
             The logical id of the resource (ODS code).
-            Must be a [valid NHS number](https://www.datadictionary.nhs.uk/attributes/nhs_number.html).
           required: true
           schema:
             type: string
-            example: 'TBC'                            
+            example: 'RTG'                            
       responses:
         '200':
           description: Valid request that returns organization history found that match the search criteria (which may be 0).
@@ -285,11 +284,10 @@ paths:
           name: _id
           description: |
             The logical id of the resource (ODS code).
-            Expressed as `<type>|<value>` where `<type>` must be `https://fhir.nhs.uk/Id/nhs-number` and `<value>` must be a [valid NHS number](https://www.datadictionary.nhs.uk/attributes/nhs_number.html).
           required: true
           schema:
             type: string
-            example: 'TBC'
+            example: 'RTG'
         - in: query
           name: _lastUpdated
           description: To select resources based on the last time they were changed.
