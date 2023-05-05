@@ -151,12 +151,12 @@ servers:
 paths:
   /Organization/ID:
     get:
-      summary: Serach for an organization ID
+      summary: Search for an organisation ID
       
       operationId: get-single-organization-id
       description: |
         ## Overview
-        Use this endpoint to return a single organization for the specified id (ODS code).
+        Use this endpoint to return a single organisation for the specified id (ODS code).
         
       parameters:
         - in: query
@@ -277,7 +277,7 @@ paths:
       operationId: get-organization-resources
       description: |
         ## Overview
-        Use this endpoint to return a bundle of Organization resources that match the specified search criteria.
+        Use this endpoint to return a bundle of 'organization' resources that match the specified search criteria.
         
       parameters:
         - in: query
