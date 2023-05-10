@@ -306,10 +306,10 @@ paths:
             type: string
           examples:
             without-code-system:
-              summary: This search uses just the ID:
+              summary: 'This search uses just the ID:'
               value: 'RTG'
             with-code-system:
-              summary: A search using the code system and ID:
+              summary: 'A search using the code system and ID:'
               value: 'ods-organization-code|RTG'
         - in: query
           name: name
@@ -323,14 +323,14 @@ paths:
             type: string
           examples:
             begins-with:
-              summary: This example matches all organisations whose name begin with `Leeds`, for example `Leeds Chest Clinic`, and is case insensitive:
+              summary: 'This example matches all organisations whose name begin with `Leeds`, for example `Leeds Chest Clinic`, and is case insensitive:'
               value: 'Leeds'
             contains:
               value: ':contains=Leeds'
-              summary: This example matches all organisations whose name contains `Leeds` at ant point, for example `South Leeds Clinical Assessment Service`, and is case insensitive:
+              summary: 'This example matches all organisations whose name contains `Leeds` at ant point, for example `South Leeds Clinical Assessment Service`, and is case insensitive:'
             exact:
               value: ':exact=LEEDS TEACHING HOSPITALS NHS TRUST'
-              summary: This example only matches the exact full name, and is case sensitive:
+              summary: 'This example only matches the exact full name, and is case sensitive:'
         - in: query
           name: active
           description: Whether the organisation's record is still in active use
