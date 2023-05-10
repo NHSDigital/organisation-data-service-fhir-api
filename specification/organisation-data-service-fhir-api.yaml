@@ -283,32 +283,53 @@ paths:
         - in: query
           name: _id
           description: |
-            The logical id of the resource (ODS code).
-          required: true
+            The organisation's ID - also known as its ODS code. If you already know the ODS code, consider using the 'Get organsiation details' endpoint instead.
+          required: false
           schema:
             type: string
             example: 'RTG'
         - in: query
           name: _lastUpdated
-          description: To select resources based on the last time they were changed.
+          description: The date that the organisation was last updated. Only supports searching for updates that happened after the given date, using the prefix `gt` (greater than).
           required: false
           schema:
             type: string
             example: 'gt2017-04-01'
         - in: query
           name: identifier
-          description: The identifier for the organisation (ODS code).
+          description: |
+            The organisation's ID - also known as its ODS code.
+            This parameter is similar to `_id` but can also explicitly include the code system for the ID - which must be `ods-organization-code`.
+            It's included for completeness for FHIR compatibility.
           required: false
           schema:
             type: string
-            example: 'AF1234'
+          examples:
+            without-code-system:
+              value: 'RTG'
+            with-code-system:
+              value: 'ods-organization-code|RTG'
         - in: query
           name: name
-          description: A portion of the organisation's name.
+          description: |
+            The organisation's name, or a part of it.
+            
+            Search expressions must:
+            - contain a minimum of 3 characters and a maximum of 100 characters
+            - only include the following characters: A-Z a-z 0-9 &()’+-_./:@ 'Space'
           required: false
           schema:
             type: string
-            example: 'Derby Teaching Hospitals NHS Foundation Trust'
+          examples:
+            begins-with:
+              value: 'Leeds'
+              summary: Matches all organisations whose name begin with `Leeds`, for example `Leeds Chest Clinic`. Case insensitive.
+            contains:
+              value: ':contains=Leeds'
+              summary: Matches all organisations whose name contains `Leeds` at ant point, for example `South Leeds Clinical Assessment Service`. Case insensitive.
+            exact:
+              value: ':exact=LEEDS TEACHING HOSPITALS NHS TRUST'
+              summary: An exact match of the full name. Case sensitive.
         - in: query
           name: active
           description: Whether the organisation's record is still in active use
