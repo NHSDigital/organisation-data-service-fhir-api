@@ -523,7 +523,7 @@ paths:
         '4XX':
           description: |
                 An error occurred as follows:
-                | HTTP Code   | isue.serverity | issue.code  | issue.details.code        | issue.details.display |
+                | HTTP Code   | isue.severity | issue.code  | issue.details.code        | issue.details.display |
                 |------------ |----------------|-----------  |-------------------------- |---------------------- |
                 |404          |error            |not-found    |NO_RECORD_FOUND            |No record found |
                 |400          |error            |code-invalid |INVALID_CODE_SYSTEM        |Invalid code system  |
