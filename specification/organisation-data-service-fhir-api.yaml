@@ -290,7 +290,7 @@ paths:
             example: 'RTG'
         - in: query
           name: _lastUpdated
-          description: The date that the organisation was last updated. Only supports searching for updates that happened after the given date, using the prefix `gt` (greater than).
+          description: The date that the organisation was last updated. Only supports matching of updates that happened after the given date, using the prefix `gt` (greater than).
           required: false
           schema:
             type: string
@@ -300,20 +300,21 @@ paths:
           description: |
             The organisation's ID - also known as its ODS code.
             This parameter is similar to `_id` but can also explicitly include the code system for the ID - which must be `ods-organization-code`.
-            It's included for completeness for FHIR compatibility.
+            It's included for FHIR compatibility.
           required: false
           schema:
             type: string
           examples:
             without-code-system:
+              summary: This search uses just the ID:
               value: 'RTG'
             with-code-system:
+              summary: A search using the code system and ID:
               value: 'ods-organization-code|RTG'
         - in: query
           name: name
           description: |
-            The organisation's name, or a part of it.
-            
+            The organisation's name, or part of it.
             Search expressions must:
             - contain a minimum of 3 characters and a maximum of 100 characters
             - only include the following characters: A-Z a-z 0-9 &()’+-_./:@ 'Space'
@@ -322,14 +323,14 @@ paths:
             type: string
           examples:
             begins-with:
+              summary: This example matches all organisations whose name begin with `Leeds`, for example `Leeds Chest Clinic`, and is case insensitive:
               value: 'Leeds'
-              summary: Matches all organisations whose name begin with `Leeds`, for example `Leeds Chest Clinic`. Case insensitive.
             contains:
               value: ':contains=Leeds'
-              summary: Matches all organisations whose name contains `Leeds` at ant point, for example `South Leeds Clinical Assessment Service`. Case insensitive.
+              summary: This example matches all organisations whose name contains `Leeds` at ant point, for example `South Leeds Clinical Assessment Service`, and is case insensitive:
             exact:
               value: ':exact=LEEDS TEACHING HOSPITALS NHS TRUST'
-              summary: An exact match of the full name. Case sensitive.
+              summary: This example only matches the exact full name, and is case sensitive:
         - in: query
           name: active
           description: Whether the organisation's record is still in active use
