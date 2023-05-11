@@ -522,18 +522,17 @@ paths:
               }
         '4XX':
           description: |
-            An error occurred as follows:
-            
-            | HTTP status | Error code                 | Description |
-            | ----------- | -------------------------- | --------------------------------------------- |
-            | 404         | not-found                  | No record found.	|
-            | 400         | code-invalid      	       | Invalid code system. |
-            | 400         | code-invalid               | Invalid code value. |
-            | 400         | code-invalid               | Invalid identifier system.|
-            | 400         | code-invalid               | Invalid identifier value. |
-            | 400         | invalid                    | Invalid parameter.|
-            | 400         | invalid                    | An input field has an invalid value for its type.|
-
+                An error occurred as follows:
+                | HTTP Code   | issue.severity  | issue.code    | issue.details.code        | issue.details.display |
+                |------------ |---------------- |-----------    |-------------------------- |----------------------  |
+                |404          |error            |not-found      |NO_RECORD_FOUND            |No record found |
+                |400          |error            |code-invalid   |INVALID_CODE_SYSTEM        |Invalid code system  |
+                |400          |error            |code-invalid   |INVALID_CODE_VALUE         |Invalid code value  |
+                |400          |error            |code-invalid   |INVALID_IDENTIFIER_SYSTEM  |Invalid identifier system  |
+                |400          |error            |code-invalid   |INVALID_IDENTIFIER_VALUE   |Invalid identifier value |
+                |400          |error            |invalid        |INVALID_PARAMETER          |Invalid parameter  |
+                |400          |error            |invalid        |INVALID_VALUE              |An input field has an invalid value for its type  |
+                
           content:
             application/fhir+json:
               example:
