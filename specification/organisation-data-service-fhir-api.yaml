@@ -523,15 +523,15 @@ paths:
         '4XX':
           description: |
                 An error occurred as follows:
-                | HTTP Code   | isue.severity  | issue.code    | issue.details.code       | issue.details.display |
-                |------------ |----------------|-----------    |--------------------------|----------------------  |
-                |404          |error            |not-found    |NO_RECORD_FOUND            |No record found |
-                |400          |error            |code-invalid |INVALID_CODE_SYSTEM        |Invalid code system  |
-                |400          |error            |code-invalid |INVALID_CODE_VALUE         |Invalid code value  |
-                |400          |error            |code-invalid |INVALID_IDENTIFIER_SYSTEM  |Invalid identifier system  |
-                |400          |error            |code-invalid |INVALID_IDENTIFIER_VALUE   |Invalid identifier value |
-                |400          |error            |invalid      |INVALID_PARAMETER          |Invalid parameter  |
-                |400          |error            |invalid      |INVALID_VALUE              |An input field has an invalid value for its type  |
+                | HTTP Code   | issue.severity  | issue.code    | issue.details.code        | issue.details.display |
+                |------------ |---------------- |-----------    |-------------------------- |----------------------  |
+                |404          |error            |not-found      |NO_RECORD_FOUND            |No record found |
+                |400          |error            |code-invalid   |INVALID_CODE_SYSTEM        |Invalid code system  |
+                |400          |error            |code-invalid   |INVALID_CODE_VALUE         |Invalid code value  |
+                |400          |error            |code-invalid   |INVALID_IDENTIFIER_SYSTEM  |Invalid identifier system  |
+                |400          |error            |code-invalid   |INVALID_IDENTIFIER_VALUE   |Invalid identifier value |
+                |400          |error            |invalid        |INVALID_PARAMETER          |Invalid parameter  |
+                |400          |error            |invalid        |INVALID_VALUE              |An input field has an invalid value for its type  |
                 
           content:
             application/fhir+json:
