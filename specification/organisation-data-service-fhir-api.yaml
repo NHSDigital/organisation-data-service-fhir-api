@@ -153,7 +153,7 @@ paths:
     get:
       summary: Get organisation details
       
-      operationId: get-single-organization-{id}:
+      operationId: get-single-organization-{id}
       description: |
         ## Overview
         Use this endpoint to return a single organisation for the specified id (ODS code).
