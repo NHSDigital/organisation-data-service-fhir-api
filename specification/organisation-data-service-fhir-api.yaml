@@ -523,6 +523,7 @@ paths:
         '4XX':
           description: |
                 An error occurred as follows:
+                
                 | HTTP Code   | issue.severity  | issue.code    | issue.details.code        | issue.details.display |
                 |------------ |---------------- |-----------    |-------------------------- |----------------------  |
                 |404          |error            |not-found      |NO_RECORD_FOUND            |No record found |
