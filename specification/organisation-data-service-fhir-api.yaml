@@ -266,9 +266,9 @@ paths:
           description: |
             An error occurred as follows:
             
-            | HTTP status | Error code                 | Description |
-            | ----------- | -------------------------- | --------------------------------------------- |
-            | 404         | not-found                  | No record found.	|
+            | HTTP Code   | issue.severity  | issue.code    | issue.details.code        | issue.details.display |
+            |------------ |---------------- |-----------    |-------------------------- |---------------------- |
+            | 404         | error           | not-found     | NO_RECORD_FOUND           | No record found |
             
   /Organization:
     get:
