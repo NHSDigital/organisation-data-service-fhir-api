@@ -471,7 +471,7 @@ paths:
               summary: 'A search using the code system and role code:'
               value: 'https://directory.spineservices.nhs.uk/STU3/STU3/CodeSystem/ODSAPI-OrganizationRole-1|197'
             multiple-roles:
-              summary: 'A search for multiple roles (like an 'OR' operator):'
+              summary: "A search for multiple roles (like an 'OR' operator):"
               value: '197,198'
         - in: query
           name: ods-org-primaryRole
