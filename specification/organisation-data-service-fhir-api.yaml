@@ -156,13 +156,13 @@ paths:
       operationId: get-single-organization-id
       description: |
         ## Overview
-        Use this endpoint to return a single organisation for the specified id (ODS code).
+        Use this endpoint to return a single organisation for the specified ID (ODS code).
         
       parameters:
         - in: query
           name: _id
           description: |
-            The logical id of the resource (ODS code).
+            The organisation's ID - also known as its ODS code.
           required: true
           schema:
             type: string
@@ -303,7 +303,7 @@ paths:
               value: 'RTG'
             with-code-system:
               summary: 'A search using the code system and ID:'
-              value: 'ods-organization-code|RTG'
+              value: 'https://fhir.nhs.uk/Id/ods-organization-code|RTG'
         - in: query
           name: _lastUpdated
           description: The date that the organisation was last updated. Only supports matching of updates that happened after the given date, using the prefix `gt` (greater than).
@@ -404,39 +404,96 @@ paths:
             example: 'LS1 4DZ'
         - in: query
           name: address-city
-          description: A city specified in an address
+          description: |
+            The start of the organisation's city address.
+            
+            Not case sensitive.
+            
+            Search expressions must:
+            - contain a minimum of 2 characters
+            - only include alphanumeric characters or a space
           required: false
           schema:
             type: string
-            example: 'derby'    
+            example: 'Derby'
+        - in: query
+          name: address-city:contains
+          description: |
+            Any part of the organisation's city address.
+            
+            Not case sensitive.
+            
+            Search expressions must:
+            - contain a minimum of 2 characters
+            - only include alphanumeric characters or a space
+          required: false
+          schema:
+            type: string
+            example: 'Derby'
+        - in: query
+          name: address-city:exact
+          description: |
+            The exact organisation city address.
+            
+            Case sensitive.
+            
+            Search expressions must:
+            - contain a minimum of 2 characters
+            - only include alphanumeric characters or a space
+          required: false
+          schema:
+            type: string
+            example: 'DERBY'
         - in: query
           name: ods-org-role
-          description: A role of the organisation
+          description: |
+            The organisation's role, based on the ODS organisation role code system.
+            
+            An organisation in ODS can have one or many roles.
+            
+            To search for organisations that have multiple roles (like an 'AND' operator), include the `ods-org-role` query parameter multiple times. For example:
+            
+            `GET https://directory.spineservices.nhs.uk/STU3/Organization?ods-org-role=76&ods-org-role=177`
+            
+            To search for organisations that have one of several roles (like an 'OR' operator), use a comma separator. For example:
+            
+            `GET https://directory.spineservices.nhs.uk/STU3/Organization?ods-org-role=197,198`
+            
+            You may combine 'AND' and 'OR' searches.
           required: false
           schema:
             type: string
-            example: ''
+          examples:
+            without-code-system:
+              summary: 'This search uses just the role code (197 = NHS trust):'
+              value: '197'
+            with-code-system:
+              summary: 'A search using the code system and role code:'
+              value: 'https://directory.spineservices.nhs.uk/STU3/STU3/CodeSystem/ODSAPI-OrganizationRole-1|197'
+            multiple-roles:
+              summary: 'A search for multiple roles (like an 'OR' operator):'
+              value: '197,198'
         - in: query
           name: ods-org-primaryRole
-          description: Whether a role of the organisation is it's primary role
+          description: Whether a role of the organisation is its primary role. Must be used in conjunction with the `ods-org-role` parameter.
           required: false
           schema:
-            type: string
+            type: boolean
             example: 'false'
         - in: query
           name: _count
-          description: Number of results per page
+          description: Number of results to return. The maximum is 20.
           required: false
           schema:
             type: string
             example: ''
         - in: query
           name: _summary
-          description: just return a count of the matching resources, without returning the actual matches
+          description: Return a count of the matching resources, without returning the actual matches.
           required: false
           schema:
             type: string
-            example: ''                             
+            enum: [count]
       responses:
         '200':
           description: Valid request that returns organization history found that match the search criteria (which may be 0).
