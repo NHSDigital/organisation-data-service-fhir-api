@@ -156,13 +156,13 @@ paths:
       operationId: get-single-organization
       description: |
         ## Overview
-        Use this endpoint to return a single organisation for the specified id (ODS code).
+        Use this endpoint to return a single organisation for the specified ID (ODS code).
         
       parameters:
         - in: path
           name: id
           description: |
-            The logical id of the resource (ODS code).
+            The organisation's ID - also known as its ODS code.
           required: true
           schema:
             type: string
@@ -289,30 +289,34 @@ paths:
             type: string
             example: 'RTG'
         - in: query
-          name: _lastUpdated
-          description: The date that the organisation was last updated. Only supports searching for updates that happened after the given date, using the prefix `gt` (greater than).
-          required: false
-          schema:
-            type: string
-            example: 'gt2017-04-01'
-        - in: query
           name: identifier
           description: |
             The organisation's ID - also known as its ODS code.
             This parameter is similar to `_id` but can also explicitly include the code system for the ID - which must be `ods-organization-code`.
-            It's included for completeness for FHIR compatibility.
+            It's included for FHIR compatibility.
           required: false
           schema:
             type: string
           examples:
             without-code-system:
+              summary: 'This search uses just the ID:'
               value: 'RTG'
             with-code-system:
-              value: 'ods-organization-code|RTG'
+              summary: 'A search using the code system and ID:'
+              value: 'https://fhir.nhs.uk/Id/ods-organization-code|RTG'
+        - in: query
+          name: _lastUpdated
+          description: The date that the organisation was last updated. Only supports matching of updates that happened after the given date, using the prefix `gt` (greater than).
+          required: false
+          schema:
+            type: string
+            example: 'gt2017-04-01'
         - in: query
           name: name
           description: |
-            The organisation's name, or a part of it.
+            The start of the organisation's name. For example, `Leeds` would match 'Leeds Chest Clinic' but not 'South Leeds Clinical Assessment Service'.
+            
+            Not case sensitive.
             
             Search expressions must:
             - contain a minimum of 3 characters and a maximum of 100 characters
@@ -320,65 +324,176 @@ paths:
           required: false
           schema:
             type: string
-          examples:
-            begins-with:
-              value: 'Leeds'
-              summary: Matches all organisations whose name begin with `Leeds`, for example `Leeds Chest Clinic`. Case insensitive.
-            contains:
-              value: ':contains=Leeds'
-              summary: Matches all organisations whose name contains `Leeds` at ant point, for example `South Leeds Clinical Assessment Service`. Case insensitive.
-            exact:
-              value: ':exact=LEEDS TEACHING HOSPITALS NHS TRUST'
-              summary: An exact match of the full name. Case sensitive.
+            example: 'Leeds'
         - in: query
-          name: active
-          description: Whether the organisation's record is still in active use
+          name: name:contains
+          description: |
+            Any part of the organisation's name. For example, `Leeds` would match 'Leeds Chest Clinic' and 'South Leeds Clinical Assessment Service'.
+            
+            Not case sensitive.
+            
+            Search expressions must:
+            - contain a minimum of 3 characters and a maximum of 100 characters
+            - only include the following characters: A-Z a-z 0-9 &()’+-_./:@ 'Space'
           required: false
           schema:
             type: string
+            example: 'Leeds'
+        - in: query
+          name: name:exact
+          description: |
+            The exact organisation name.
+            
+            Case sensitive.
+            
+            Search expressions must:
+            - contain a minimum of 3 characters and a maximum of 100 characters
+            - only include the following characters: A-Z a-z 0-9 &()’+-_./:@ 'Space'
+          required: false
+          schema:
+            type: string
+            example: 'LEEDS TEACHING HOSPITALS NHS TRUST'
+        - in: query
+          name: active
+          description: Whether the organisation's record is still in active use.
+          required: false
+          schema:
+            type: boolean
             example: 'true'
         - in: query
           name: address-postalcode
-          description: A postcode specified in an address
+          description: |
+            The start of the organisation's postcode.
+            
+            Not case sensitive.
+            
+            Search expressions must:
+            - contain a minimum of 2 characters
+            - only include alphanumeric characters or a space
           required: false
           schema:
             type: string
-            example: 'DE22 3NE'
+            example: 'LS1'
+        - in: query
+          name: address-postalcode:contains
+          description: |
+            Any part of the organisation's postcode.
+            
+            Not case sensitive.
+            
+            Search expressions must:
+            - contain a minimum of 2 characters
+            - only include alphanumeric characters or a space
+          required: false
+          schema:
+            type: string
+            example: '4DZ'
+        - in: query
+          name: address-postalcode:exact
+          description: |
+            The exact organisation postcode.
+            
+            Case sensitive.
+            
+            Search expressions must:
+            - contain a minimum of 2 characters
+            - only include alphanumeric characters or a space
+          required: false
+          schema:
+            type: string
+            example: 'LS1 4DZ'
         - in: query
           name: address-city
-          description: A city specified in an address
+          description: |
+            The start of the organisation's city address.
+            
+            Not case sensitive.
+            
+            Search expressions must:
+            - contain a minimum of 2 characters
+            - only include alphanumeric characters or a space
           required: false
           schema:
             type: string
-            example: 'derby'    
+            example: 'Derby'
+        - in: query
+          name: address-city:contains
+          description: |
+            Any part of the organisation's city address.
+            
+            Not case sensitive.
+            
+            Search expressions must:
+            - contain a minimum of 2 characters
+            - only include alphanumeric characters or a space
+          required: false
+          schema:
+            type: string
+            example: 'Derby'
+        - in: query
+          name: address-city:exact
+          description: |
+            The exact organisation city address.
+            
+            Case sensitive.
+            
+            Search expressions must:
+            - contain a minimum of 2 characters
+            - only include alphanumeric characters or a space
+          required: false
+          schema:
+            type: string
+            example: 'DERBY'
         - in: query
           name: ods-org-role
-          description: A role of the organisation
+          description: |
+            The organisation's role, based on the ODS organisation role code system.
+            
+            An organisation in ODS can have one or many roles.
+            
+            To search for organisations that have multiple roles (like an 'AND' operator), include the `ods-org-role` query parameter multiple times. For example:
+            
+            `GET https://directory.spineservices.nhs.uk/STU3/Organization?ods-org-role=76&ods-org-role=177`
+            
+            To search for organisations that have one of several roles (like an 'OR' operator), use a comma separator. For example:
+            
+            `GET https://directory.spineservices.nhs.uk/STU3/Organization?ods-org-role=197,198`
+            
+            You may combine 'AND' and 'OR' searches.
           required: false
           schema:
             type: string
-            example: ''
+          examples:
+            without-code-system:
+              summary: 'This search uses just the role code (197 = NHS trust):'
+              value: '197'
+            with-code-system:
+              summary: 'A search using the code system and role code:'
+              value: 'https://directory.spineservices.nhs.uk/STU3/STU3/CodeSystem/ODSAPI-OrganizationRole-1|197'
+            multiple-roles:
+              summary: "A search for multiple roles (like an 'OR' operator):"
+              value: '197,198'
         - in: query
           name: ods-org-primaryRole
-          description: Whether a role of the organisation is it's primary role
+          description: Whether a role of the organisation is its primary role. Must be used in conjunction with the `ods-org-role` parameter.
           required: false
           schema:
-            type: string
+            type: boolean
             example: 'false'
         - in: query
           name: _count
-          description: Number of results per page
+          description: Number of results to return. The maximum is 20.
           required: false
           schema:
             type: string
             example: ''
         - in: query
           name: _summary
-          description: just return a count of the matching resources, without returning the actual matches
+          description: Return a count of the matching resources, without returning the actual matches.
           required: false
           schema:
             type: string
-            example: ''                             
+            enum: [count]
       responses:
         '200':
           description: Valid request that returns organization history found that match the search criteria (which may be 0).
