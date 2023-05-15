@@ -289,13 +289,6 @@ paths:
             type: string
             example: 'RTG'
         - in: query
-          name: _lastUpdated
-          description: The date that the organisation was last updated. Only supports matching of updates that happened after the given date, using the prefix `gt` (greater than).
-          required: false
-          schema:
-            type: string
-            example: 'gt2017-04-01'
-        - in: query
           name: identifier
           description: |
             The organisation's ID - also known as its ODS code.
@@ -312,39 +305,103 @@ paths:
               summary: 'A search using the code system and ID:'
               value: 'ods-organization-code|RTG'
         - in: query
+          name: _lastUpdated
+          description: The date that the organisation was last updated. Only supports matching of updates that happened after the given date, using the prefix `gt` (greater than).
+          required: false
+          schema:
+            type: string
+            example: 'gt2017-04-01'
+        - in: query
           name: name
           description: |
-            The organisation's name, or part of it.
+            The start of the organisation's name. For example, `Leeds` would match 'Leeds Chest Clinic' but not 'South Leeds Clinical Assessment Service'.
+            
+            Not case sensitive.
+            
             Search expressions must:
             - contain a minimum of 3 characters and a maximum of 100 characters
             - only include the following characters: A-Z a-z 0-9 &()’+-_./:@ 'Space'
           required: false
           schema:
             type: string
-          examples:
-            begins-with:
-              summary: 'This example matches all organisations whose name begin with `Leeds`, for example `Leeds Chest Clinic`, and is case insensitive:'
-              value: 'Leeds'
-            contains:
-              value: ':contains=Leeds'
-              summary: 'This example matches all organisations whose name contains `Leeds` at ant point, for example `South Leeds Clinical Assessment Service`, and is case insensitive:'
-            exact:
-              value: ':exact=LEEDS TEACHING HOSPITALS NHS TRUST'
-              summary: 'This example only matches the exact full name, and is case sensitive:'
+            example: 'Leeds'
         - in: query
-          name: active
-          description: Whether the organisation's record is still in active use
+          name: name:contains
+          description: |
+            Any part of the organisation's name. For example, `Leeds` would match 'Leeds Chest Clinic' and 'South Leeds Clinical Assessment Service'.
+            
+            Not case sensitive.
+            
+            Search expressions must:
+            - contain a minimum of 3 characters and a maximum of 100 characters
+            - only include the following characters: A-Z a-z 0-9 &()’+-_./:@ 'Space'
           required: false
           schema:
             type: string
+            example: 'Leeds'
+        - in: query
+          name: name:exact
+          description: |
+            The exact organisation name.
+            
+            Case sensitive.
+            
+            Search expressions must:
+            - contain a minimum of 3 characters and a maximum of 100 characters
+            - only include the following characters: A-Z a-z 0-9 &()’+-_./:@ 'Space'
+          required: false
+          schema:
+            type: string
+            example: 'LEEDS TEACHING HOSPITALS NHS TRUST'
+        - in: query
+          name: active
+          description: Whether the organisation's record is still in active use.
+          required: false
+          schema:
+            type: boolean
             example: 'true'
         - in: query
           name: address-postalcode
-          description: A postcode specified in an address
+          description: |
+            The start of the organisation's postcode.
+            
+            Not case sensitive.
+            
+            Search expressions must:
+            - contain a minimum of 2 characters
+            - only include alphanumeric characters or a space
           required: false
           schema:
             type: string
-            example: 'DE22 3NE'
+            example: 'LS1'
+        - in: query
+          name: address-postalcode:contains
+          description: |
+            Any part of the organisation's postcode.
+            
+            Not case sensitive.
+            
+            Search expressions must:
+            - contain a minimum of 2 characters
+            - only include alphanumeric characters or a space
+          required: false
+          schema:
+            type: string
+            example: '4DZ'
+        - in: query
+          name: address-postalcode:exact
+          description: |
+            The exact organisation postcode.
+            
+            Case sensitive.
+            
+            Search expressions must:
+            - contain a minimum of 2 characters
+            - only include alphanumeric characters or a space
+          required: false
+          schema:
+            type: string
+            example: 'LS1 4DZ'
         - in: query
           name: address-city
           description: A city specified in an address
