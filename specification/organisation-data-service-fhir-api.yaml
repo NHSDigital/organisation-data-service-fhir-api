@@ -299,7 +299,7 @@ paths:
             type: string
           examples:
             without-code-system:
-              summary: 'This search uses just the ID:'
+              summary: 'A search using just the ID:'
               value: 'RTG'
             with-code-system:
               summary: 'A search using the code system and ID:'
@@ -315,6 +315,8 @@ paths:
           name: name
           description: |
             The start of the organisation's name. For example, `Leeds` would match 'Leeds Chest Clinic' but not 'South Leeds Clinical Assessment Service'.
+            
+            To search anywhere in the organisation's name, use `name:contains`. To search for an exact match, use `name:exact`.
             
             Not case sensitive.
             
@@ -365,11 +367,13 @@ paths:
           description: |
             The start of the organisation's postcode.
             
+            To search anywhere in the postcode, use `address-postalcode:contains`. To search for an exact match, use `address-postalcode:exact`.
+            
             Not case sensitive.
             
             Search expressions must:
             - contain a minimum of 2 characters
-            - only include alphanumeric characters or a space
+            - only include alphanumeric characters and spaces
           required: false
           schema:
             type: string
@@ -383,7 +387,7 @@ paths:
             
             Search expressions must:
             - contain a minimum of 2 characters
-            - only include alphanumeric characters or a space
+            - only include alphanumeric characters and spaces
           required: false
           schema:
             type: string
@@ -397,7 +401,7 @@ paths:
             
             Search expressions must:
             - contain a minimum of 2 characters
-            - only include alphanumeric characters or a space
+            - only include alphanumeric characters and spaces
           required: false
           schema:
             type: string
@@ -407,11 +411,13 @@ paths:
           description: |
             The start of the organisation's city address.
             
+            To search anywhere in the city address, use `address-city:contains`. To search for an exact match, use `address-city:exact`.
+            
             Not case sensitive.
             
             Search expressions must:
             - contain a minimum of 2 characters
-            - only include alphanumeric characters or a space
+            - only include alphanumeric characters and spaces
           required: false
           schema:
             type: string
@@ -425,7 +431,7 @@ paths:
             
             Search expressions must:
             - contain a minimum of 2 characters
-            - only include alphanumeric characters or a space
+            - only include alphanumeric characters and spaces
           required: false
           schema:
             type: string
@@ -439,7 +445,7 @@ paths:
             
             Search expressions must:
             - contain a minimum of 2 characters
-            - only include alphanumeric characters or a space
+            - only include alphanumeric characters and spaces
           required: false
           schema:
             type: string
@@ -465,7 +471,7 @@ paths:
             type: string
           examples:
             without-code-system:
-              summary: 'This search uses just the role code (197 = NHS trust):'
+              summary: 'A search using just the role code (197 = NHS trust):'
               value: '197'
             with-code-system:
               summary: 'A search using the code system and role code:'
