@@ -141,11 +141,9 @@ info:
     Errors specific to each API are shown in the Endpoints section, under Response. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
 
 servers:
-  - url: 'https://sandbox.api.service.nhs.uk/organisation-data-service-fhir-api'
-    description: Sandbox environment.
-  - url: 'https://int.api.service.nhs.uk/organisation-data-service-fhir-api'
-    description: Integration test environment.
-  - url: 'https://api.service.nhs.uk/organisation-data-service-fhir-api'
+  - url: 'https://uat.directory.spineservices.nhs.uk/STU3/'
+    description: User acceptance test (UAT) environment.
+  - url: 'https://directory.spineservices.nhs.uk/STU3/'
     description: Production environment.   
     
 paths:
