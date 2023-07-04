@@ -123,7 +123,7 @@ info:
     | Production                  |`https://directory.spineservices.nhs.uk/STU3/`                          |
     
     For example:
-    `https://uat.directory.spineservices.nhs.uk/STU3/Organization/RJY/`
+    `https://uat.directory.spineservices.nhs.uk/STU3/Organization/RJY`
     returns the reduced dataset for the organisation whose ODS code is RJY.
     
     ### Integration testing
