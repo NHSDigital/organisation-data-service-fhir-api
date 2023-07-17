@@ -690,105 +690,17 @@ paths:
         - in: path
           name: id
           description: |
-            The valueset for the specified id.
+            The id for the ValueSet.
           required: true
           schema:
             type: string
-            example: 'TBC'                            
+            example: 'ODSAPI-OrganizationRole-1'                           
       responses:
         '200':
           description: Valid request that returns a single ValueSet for the specied id.
           content:
             application/fhir+json:
-              example:
-                {
-                  "resourceType": "Organization",
-                  "id": "RR8",
-                  "meta": {
-                      "lastUpdated": "2018-01-31T00:00:00+00:00",
-                      "profile": "https://fhir.nhs.uk/STU3/StructureDefinition/ODSAPI-Organization-1"
-                  },
-                  "extension": [
-                      {
-                          "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-ActivePeriod-1",
-                          "valuePeriod": {
-                              "extension": [
-                                  {
-                                      "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-DateType-1",
-                                      "valueString": "Operational"
-                                  }
-                              ],
-                              "start": "1998-04-01"
-                          }
-                      },
-                      {
-                          "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-OrganizationRole-1",
-                          "extension": [
-                              {
-                                  "url": "role",
-                                  "valueCoding": {
-                                      "system": "https://directory.spineservices.nhs.uk/STU3/CodeSystem/ODSAPI-OrganizationRole-1",
-                                      "code": "197",
-                                      "display": "NHS TRUST"
-                                  }
-                              },
-                              {
-                                  "url": "primaryRole",
-                                  "valueBoolean": true
-                              },
-                              {
-                                  "url": "activePeriod",
-                                  "valuePeriod": {
-                                      "extension": [
-                                          {
-                                              "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-DateType-1",
-                                              "valueString": "Operational"
-                                          }
-                                      ],
-                                      "start": "1998-04-01"
-                                  }
-                              },
-                              {
-                                  "url": "status",
-                                  "valueString": "Active"
-                              }
-                          ]
-                      }
-                  ],
-                  "identifier": {
-                      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                      "value": "RR8"
-                  },
-                  "active": true,
-                  "type": {
-                      "coding": {
-                          "system": "https://fhir.nhs.uk/STU3/CodeSystem/ODSAPI-OrganizationRecordClass-1",
-                          "code": "1",
-                          "display": "HSCOrg"
-                      }
-                  },
-                  "name": "LEEDS TEACHING HOSPITALS NHS TRUST",
-                  "telecom": [
-                      {
-                          "system": "fax",
-                          "value": "0113 242 6496"
-                      },
-                      {
-                          "system": "phone",
-                          "value": "0113 243 3144"
-                      }
-                  ],
-                  "address": {
-                      "line": [
-                          "ST. JAMES'S UNIVERSITY HOSPITAL",
-                          "BECKETT STREET"
-                      ],
-                      "city": "LEEDS",
-                      "district": "WEST YORKSHIRE",
-                      "postalCode": "LS9 7TF",
-                      "country": "ENGLAND"
-                  }
-              }
+              example: {}
               
         '4XX':
           description: |
@@ -796,9 +708,7 @@ paths:
             
             | HTTP Code   | issue.severity  | issue.code    | issue.details.code        | issue.details.display |
             |------------ |---------------- |-----------    |-------------------------- |---------------------- |
-            | TBC         | TBC           | TBC     | TBC          | TBC |          
-            | TBC         | TBC           | TBC     | TBC          | TBC | 
-            | TBC         | TBC           | TBC     | TBC           | TBC | 
+            | 404         | error           | not-found     | NO_RECORD_FOUND           | No record found |
           
   /metadata:
     get:
@@ -811,221 +721,35 @@ paths:
         
       responses:
         '200':
-          description: TBC
+          description: Retrieved the Capability Statement from the FHIR Server
           content:
             application/fhir+json:
-              example:
-                {
-                  "resourceType": "Organization",
-                  "id": "RR8",
-                  "meta": {
-                      "lastUpdated": "2018-01-31T00:00:00+00:00",
-                      "profile": "https://fhir.nhs.uk/STU3/StructureDefinition/ODSAPI-Organization-1"
-                  },
-                  "extension": [
-                      {
-                          "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-ActivePeriod-1",
-                          "valuePeriod": {
-                              "extension": [
-                                  {
-                                      "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-DateType-1",
-                                      "valueString": "Operational"
-                                  }
-                              ],
-                              "start": "1998-04-01"
-                          }
-                      },
-                      {
-                          "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-OrganizationRole-1",
-                          "extension": [
-                              {
-                                  "url": "role",
-                                  "valueCoding": {
-                                      "system": "https://directory.spineservices.nhs.uk/STU3/CodeSystem/ODSAPI-OrganizationRole-1",
-                                      "code": "197",
-                                      "display": "NHS TRUST"
-                                  }
-                              },
-                              {
-                                  "url": "primaryRole",
-                                  "valueBoolean": true
-                              },
-                              {
-                                  "url": "activePeriod",
-                                  "valuePeriod": {
-                                      "extension": [
-                                          {
-                                              "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-DateType-1",
-                                              "valueString": "Operational"
-                                          }
-                                      ],
-                                      "start": "1998-04-01"
-                                  }
-                              },
-                              {
-                                  "url": "status",
-                                  "valueString": "Active"
-                              }
-                          ]
-                      }
-                  ],
-                  "identifier": {
-                      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                      "value": "RR8"
-                  },
-                  "active": true,
-                  "type": {
-                      "coding": {
-                          "system": "https://fhir.nhs.uk/STU3/CodeSystem/ODSAPI-OrganizationRecordClass-1",
-                          "code": "1",
-                          "display": "HSCOrg"
-                      }
-                  },
-                  "name": "LEEDS TEACHING HOSPITALS NHS TRUST",
-                  "telecom": [
-                      {
-                          "system": "fax",
-                          "value": "0113 242 6496"
-                      },
-                      {
-                          "system": "phone",
-                          "value": "0113 243 3144"
-                      }
-                  ],
-                  "address": {
-                      "line": [
-                          "ST. JAMES'S UNIVERSITY HOSPITAL",
-                          "BECKETT STREET"
-                      ],
-                      "city": "LEEDS",
-                      "district": "WEST YORKSHIRE",
-                      "postalCode": "LS9 7TF",
-                      "country": "ENGLAND"
-                  }
-              }
-              
-        '4XX':
-          description: |
-            An error occurred as follows:
-            
-            | HTTP Code   | issue.severity  | issue.code    | issue.details.code        | issue.details.display |
-            |------------ |---------------- |-----------    |-------------------------- |---------------------- |
-            | TBC         | TBC           | TBC     | TBC          | TBC |          
-            | TBC         | TBC           | TBC     | TBC          | TBC | 
-            | TBC         | TBC           | TBC     | TBC           | TBC | 
+              example: {}
                    
   /codesystem/{id}:
     get:
-      summary: Get codesystem from id
+      summary: Get CodeSystem
       
-      operationId: get-codesyem-id
+      operationId: get-codesystem-id
       description: |
         ## Overview
-        Return a codesystem for a specified id.
+        Return a single CodeSystem for a specified id.
       
       parameters:
         - in: path
           name: id
           description: |
-            The valueset for the specified id.
+            The id for a CodeSystem
           required: true
           schema:
             type: string
-            example: 'TBC'                                    
+            example: 'ODSAPI-OrganizationRecordClass-1'                                 
       responses:
         '200':
-          description: TBC
+          description: Returned the CodeSystem
           content:
             application/fhir+json:
-              example:
-                {
-                  "resourceType": "Organization",
-                  "id": "RR8",
-                  "meta": {
-                      "lastUpdated": "2018-01-31T00:00:00+00:00",
-                      "profile": "https://fhir.nhs.uk/STU3/StructureDefinition/ODSAPI-Organization-1"
-                  },
-                  "extension": [
-                      {
-                          "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-ActivePeriod-1",
-                          "valuePeriod": {
-                              "extension": [
-                                  {
-                                      "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-DateType-1",
-                                      "valueString": "Operational"
-                                  }
-                              ],
-                              "start": "1998-04-01"
-                          }
-                      },
-                      {
-                          "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-OrganizationRole-1",
-                          "extension": [
-                              {
-                                  "url": "role",
-                                  "valueCoding": {
-                                      "system": "https://directory.spineservices.nhs.uk/STU3/CodeSystem/ODSAPI-OrganizationRole-1",
-                                      "code": "197",
-                                      "display": "NHS TRUST"
-                                  }
-                              },
-                              {
-                                  "url": "primaryRole",
-                                  "valueBoolean": true
-                              },
-                              {
-                                  "url": "activePeriod",
-                                  "valuePeriod": {
-                                      "extension": [
-                                          {
-                                              "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-DateType-1",
-                                              "valueString": "Operational"
-                                          }
-                                      ],
-                                      "start": "1998-04-01"
-                                  }
-                              },
-                              {
-                                  "url": "status",
-                                  "valueString": "Active"
-                              }
-                          ]
-                      }
-                  ],
-                  "identifier": {
-                      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                      "value": "RR8"
-                  },
-                  "active": true,
-                  "type": {
-                      "coding": {
-                          "system": "https://fhir.nhs.uk/STU3/CodeSystem/ODSAPI-OrganizationRecordClass-1",
-                          "code": "1",
-                          "display": "HSCOrg"
-                      }
-                  },
-                  "name": "LEEDS TEACHING HOSPITALS NHS TRUST",
-                  "telecom": [
-                      {
-                          "system": "fax",
-                          "value": "0113 242 6496"
-                      },
-                      {
-                          "system": "phone",
-                          "value": "0113 243 3144"
-                      }
-                  ],
-                  "address": {
-                      "line": [
-                          "ST. JAMES'S UNIVERSITY HOSPITAL",
-                          "BECKETT STREET"
-                      ],
-                      "city": "LEEDS",
-                      "district": "WEST YORKSHIRE",
-                      "postalCode": "LS9 7TF",
-                      "country": "ENGLAND"
-                  }
-              }
+              example: {}
               
         '4XX':
           description: |
@@ -1033,7 +757,4 @@ paths:
             
             | HTTP Code   | issue.severity  | issue.code    | issue.details.code        | issue.details.display |
             |------------ |---------------- |-----------    |-------------------------- |---------------------- |
-            | TBC         | TBC           | TBC     | TBC          | TBC |          
-            | TBC         | TBC           | TBC     | TBC          | TBC | 
-            | TBC         | TBC           | TBC     | TBC           | TBC | 
-                               
+            | 404         | error           | not-found     | NO_RECORD_FOUND           | No record found |
