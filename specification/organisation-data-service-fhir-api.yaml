@@ -676,15 +676,208 @@ paths:
             | HTTP Code   | issue.severity  | issue.code    | issue.details.code        | issue.details.display |
             |------------ |---------------- |-----------    |-------------------------- |---------------------- |
             | 404         | error           | not-found     | NO_RECORD_FOUND           | No record found |
-            
+
+  /metadata:
+    get:
+      summary: Get capability statement
+      
+      operationId: get-capability-statement
+      description: |
+        ## Overview
+        Use this endpoint to get a Capability Statement. A Capability Statement is a set of capabilities of a FHIR Server that may be used as a statement of actual server functionality or a statement of required or desired server implementation.
+        
+      responses:
+        '200':
+          description: Retrieved the Capability Statement from the FHIR Server
+          content:
+            application/fhir+json:
+              example:
+                {
+                  "resourceType": "CapabilityStatement",
+                  "url": "https://uat.directory.spineservices.nhs.uk/STU3/metadata?",
+                  "version": "1.0.0",
+                  "name": "ODSAPI-CapabilityStatement-1",
+                  "status": "active",
+                  "date": "2018-04-12",
+                  "publisher": "NHS Digital",
+                  "contact": [
+                    {
+                      "name": "National Helpdesk Exeter",
+                      "telecom": [
+                        {
+                          "system": "email",
+                          "value": "exeter.helpdesk@nhs.net",
+                          "use": "work"
+                        },
+                        {
+                          "system": "phone",
+                          "value": "0300 303 4034",
+                          "use": "work"
+                        }
+                      ]
+                    }
+                  ],
+                  "description": "An API for retrieving organisation data from the NHS Digital Organisation Data Service.",
+                  "copyright": "Copyright © 2017 NHS Digital",
+                  "kind": "instance",
+                  "instantiates": [
+                    "https://fhir.nhs.uk/STU3/CapabilityStatement/ODSAPI-CapabilityStatement-1"
+                  ],
+                  "fhirVersion": "3.0.1",
+                  "acceptUnknown": "no",
+                  "format": [
+                    "application/fhir+xml",
+                    "application/fhir+json"
+                  ],
+                  "implementationGuide": [
+                    "https://developer.nhs.uk/apis/ods/"
+                  ],
+                  "profile": [
+                    {
+                      "reference": "https://fhir.nhs.uk/STU3/StructureDefinition/ODSAPI-Organization-1"
+                    },
+                    {
+                      "reference": "https://fhir.nhs.uk/STU3/StructureDefinition/ODSAPI-ActivePeriod-1"
+                    },
+                    {
+                      "reference": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-ActivePeriod-1"
+                    },
+                    {
+                      "reference": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-OrganizationRole-1"
+                    },
+                    {
+                      "reference": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-UPRN-1"
+                    },
+                    {
+                      "reference": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-DateType-1"
+                    }
+                  ],
+                  "rest": [
+                    {
+                      "mode": "server",
+                      "security": {
+                        "cors": true
+                      },
+                      "resource": [
+                        {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/capabilitystatement-search-parameter-combination",
+                              "extension": [
+                                {
+                                  "url": "required",
+                                  "valueString": "ods-org-primaryRole"
+                                },
+                                {
+                                  "url": "required",
+                                  "valueString": "ods-org-role"
+                                }
+                              ]
+                            }
+                          ],
+                          "type": "Organization",
+                          "profile": {
+                            "reference": "https://fhir.nhs.uk/STU3/StructureDefinition/ODSAPI-Organization-1"
+                          },
+                          "interaction": [
+                            {
+                              "code": "read"
+                            },
+                            {
+                              "code": "search-type"
+                            }
+                          ],
+                          "versioning": "no-version",
+                          "readHistory": false,
+                          "updateCreate": false,
+                          "conditionalCreate": false,
+                          "conditionalRead": "not-supported",
+                          "conditionalUpdate": false,
+                          "conditionalDelete": "not-supported",
+                          "searchParam": [
+                            {
+                              "name": "_id",
+                              "type": "token"
+                            },
+                            {
+                              "name": "_lastUpdated",
+                              "type": "date"
+                            },
+                            {
+                              "name": "_count",
+                              "type": "number"
+                            },
+                            {
+                              "name": "_summary",
+                              "type": "token"
+                            },
+                            {
+                              "name": "identifier",
+                              "type": "token"
+                            },
+                            {
+                              "name": "name",
+                              "type": "string"
+                            },
+                            {
+                              "name": "active",
+                              "type": "token"
+                            },
+                            {
+                              "name": "address-city",
+                              "type": "string"
+                            },
+                            {
+                              "name": "address-postalcode",
+                              "type": "string"
+                            },
+                            {
+                              "name": "ods-org-role",
+                              "definition": "https://fhir.nhs.uk/STU3/SearchParameter/ODSAPI-OrganizationRole-Role-1",
+                              "type": "token"
+                            },
+                            {
+                              "name": "ods-org-primaryRole",
+                              "definition": "https://fhir.nhs.uk/STU3/SearchParameter/ODSAPI-OrganizationRole-PrimaryRole-1",
+                              "type": "token"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "CodeSystem",
+                          "interaction": [
+                            {
+                              "code": "read"
+                            }
+                          ],
+                          "versioning": "no-version",
+                          "readHistory": false,
+                          "updateCreate": false,
+                          "conditionalCreate": false,
+                          "conditionalRead": "not-supported",
+                          "conditionalUpdate": false,
+                          "conditionalDelete": "not-supported",
+                          "searchParam": [
+                            {
+                              "name": "url",
+                              "type": "string",
+                              "documentation": "The logical URL for the CodeSystem"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+
   /ValueSet/{id}:
     get:
-      summary: Get Valueset
+      summary: Get value set
       
       operationId: get-valueset-specified-id
       description: |
         ## Overview
-        Use this endpoint to return a single ValueSet for the specified id.
+        Use this endpoint to get a single ValueSet for the specified ID.
         
       parameters:
         - in: path
@@ -697,7 +890,7 @@ paths:
             example: 'ODSAPI-OrganizationRole-1'                           
       responses:
         '200':
-          description: Valid request that returns a single ValueSet for the specied id.
+          description: Valid request that returns a single ValueSet for the specied ID.
           content:
             application/fhir+json:
               example: {}
@@ -709,47 +902,830 @@ paths:
             | HTTP Code   | issue.severity  | issue.code    | issue.details.code        | issue.details.display |
             |------------ |---------------- |-----------    |-------------------------- |---------------------- |
             | 404         | error           | not-found     | NO_RECORD_FOUND           | No record found |
-          
-  /metadata:
-    get:
-      summary: Get metadata
-      
-      operationId: get-capability-statement
-      description: |
-        ## Overview
-        A Capability Statement is a set of capabilities of a FHIR Server that may be used as a statement of actual server functionality or a statement of required or desired server implementation.
-        
-      responses:
-        '200':
-          description: Retrieved the Capability Statement from the FHIR Server
-          content:
-            application/fhir+json:
-              example: {}
                    
-  /codesystem/{id}:
+  /CodeSystem/{id}:
     get:
-      summary: Get CodeSystem
+      summary: Get code system
       
       operationId: get-codesystem-id
       description: |
         ## Overview
-        Return a single CodeSystem for a specified id.
+        Use this endpoint to get a single Code System for a specified ID.
       
       parameters:
         - in: path
           name: id
           description: |
-            The id for a CodeSystem
+            The ID for a Code System
           required: true
           schema:
             type: string
-            example: 'ODSAPI-OrganizationRecordClass-1'                                 
+            example: 'ODSAPI-OrganizationRole-1'          
       responses:
         '200':
-          description: Returned the CodeSystem
+          description: OK result with CodeSystem
           content:
             application/fhir+json:
-              example: {}
+              example: 
+                {
+                    "resourceType": "CodeSystem",
+                    "url": "https://uat.directory.spineservices.nhs.uk/STU3/CodeSystem/ODSAPI-OrganizationRole-1",
+                    "version": "1.32.0",
+                    "name": "ODS API Organization Role",
+                    "status": "active",
+                    "date": "2023-03-10",
+                    "publisher": "NHS Digital",
+                    "contact": [
+                        {
+                            "name": "National Helpdesk Exeter",
+                            "telecom": [
+                                {
+                                    "system": "email",
+                                    "value": "exeter.helpdesk@nhs.net",
+                                    "use": "work"
+                                },
+                                {
+                                    "system": "phone",
+                                    "value": "0300 303 4034",
+                                    "use": "work"
+                                }
+                            ]
+                        }
+                    ],
+                    "description": "A CodeSystem that identifies the role(s) of the organization.",
+                    "copyright": "Copyright © 2017 Health and Social Care Information Centre. NHS Digital is the trading name of the Health and Social Care Information Centre.",
+                    "content": "complete",
+                    "concept": [
+                        {
+                            "code": "180",
+                            "display": "PRIMARY CARE TRUST SITE"
+                        },
+                        {
+                            "code": "114",
+                            "display": "DMU SITE"
+                        },
+                        {
+                            "code": "132",
+                            "display": "HEALTH AUTHORITY (HA)"
+                        },
+                        {
+                            "code": "15",
+                            "display": "REG'D UNDER PART 2 CARE STDS ACT 2000"
+                        },
+                        {
+                            "code": "7",
+                            "display": "HOSPICE"
+                        },
+                        {
+                            "code": "189",
+                            "display": "SPECIAL HEALTH AUTHORITY (SPHA)"
+                        },
+                        {
+                            "code": "191",
+                            "display": "SPECIAL HEALTH AUTHORITY SITE"
+                        },
+                        {
+                            "code": "31",
+                            "display": "PPA EPACT SYSTEM"
+                        },
+                        {
+                            "code": "29",
+                            "display": "TREATMENT CENTRE"
+                        },
+                        {
+                            "code": "268",
+                            "display": "MEDICINE SUPPLIER"
+                        },
+                        {
+                            "code": "142",
+                            "display": "LOCAL HEALTH BOARD"
+                        },
+                        {
+                            "code": "144",
+                            "display": "WELSH LOCAL HEALTH BOARD"
+                        },
+                        {
+                            "code": "108",
+                            "display": "CARE TRUST SITE"
+                        },
+                        {
+                            "code": "119",
+                            "display": "LOCAL AUTHORITY - LEGACY"
+                        },
+                        {
+                            "code": "122",
+                            "display": "LOCAL AUTHORITY SITE - LEGACY"
+                        },
+                        {
+                            "code": "175",
+                            "display": "PRISON"
+                        },
+                        {
+                            "code": "126",
+                            "display": "GOVERNMENT DEPARTMENT"
+                        },
+                        {
+                            "code": "24",
+                            "display": "NHS TRUST DERIVED"
+                        },
+                        {
+                            "code": "57",
+                            "display": "FOUNDATION TRUST"
+                        },
+                        {
+                            "code": "173",
+                            "display": "PATHOLOGY LAB"
+                        },
+                        {
+                            "code": "22",
+                            "display": "LEVEL 04 PCT"
+                        },
+                        {
+                            "code": "109",
+                            "display": "DISTRICT HEALTH AUTHORITY (DHA)"
+                        },
+                        {
+                            "code": "111",
+                            "display": "DIRECTLY MANAGED UNIT (DMU)"
+                        },
+                        {
+                            "code": "123",
+                            "display": "LOCAL AUTHORITY DEPARTMENT"
+                        },
+                        {
+                            "code": "185",
+                            "display": "REGIONAL OFFICE (RO)"
+                        },
+                        {
+                            "code": "222",
+                            "display": "LOCAL AUTHORITY SITE"
+                        },
+                        {
+                            "code": "40",
+                            "display": "UNITARY AUTHORITY"
+                        },
+                        {
+                            "code": "33",
+                            "display": "COUNTY COUNCIL"
+                        },
+                        {
+                            "code": "91",
+                            "display": "EXECUTIVE AGENCY PROGRAMME"
+                        },
+                        {
+                            "code": "209",
+                            "display": "NHS ENGLAND (REGION)"
+                        },
+                        {
+                            "code": "146",
+                            "display": "LOCAL SERVICE PROVIDER (LSP)"
+                        },
+                        {
+                            "code": "137",
+                            "display": "ISLE OF MAN GOVERNMENT DIRECTORATE"
+                        },
+                        {
+                            "code": "140",
+                            "display": "ISLE OF MAN GOVERNMENT DIRECTORATE SITE"
+                        },
+                        {
+                            "code": "161",
+                            "display": "NHS SUPPORT AGENCY"
+                        },
+                        {
+                            "code": "200",
+                            "display": "WELSH ASSEMBLY"
+                        },
+                        {
+                            "code": "90",
+                            "display": "EXECUTIVE AGENCY SITE"
+                        },
+                        {
+                            "code": "148",
+                            "display": "LOCAL HEALTH BOARD SITE"
+                        },
+                        {
+                            "code": "249",
+                            "display": "HOSPICE PRESCRIBING COST CENTRE"
+                        },
+                        {
+                            "code": "80",
+                            "display": "OUT OF HOURS COST CENTRE"
+                        },
+                        {
+                            "code": "87",
+                            "display": "WALK IN CENTRE"
+                        },
+                        {
+                            "code": "259",
+                            "display": "URGENT & EMERGENCY CARE PRESCRIBING COST CENTRE"
+                        },
+                        {
+                            "code": "138",
+                            "display": "ISLE OF MAN GOVERNMENT DEPARTMENT"
+                        },
+                        {
+                            "code": "105",
+                            "display": "CANCER REGISTRY"
+                        },
+                        {
+                            "code": "246",
+                            "display": "CARE HOME/NURSING HOME PRESCRIBING COST CENTRE"
+                        },
+                        {
+                            "code": "169",
+                            "display": "OTHER UNIT (IN SUPPORT OF NHS BUSINESS)"
+                        },
+                        {
+                            "code": "92",
+                            "display": "APPLICATION SERVICE PROVIDER"
+                        },
+                        {
+                            "code": "21",
+                            "display": "LEVEL 03 PCT"
+                        },
+                        {
+                            "code": "106",
+                            "display": "COMMON SERVICE AGENCY (CSA)"
+                        },
+                        {
+                            "code": "25",
+                            "display": "PCT DERIVED"
+                        },
+                        {
+                            "code": "150",
+                            "display": "MILITARY HOSPITAL"
+                        },
+                        {
+                            "code": "65",
+                            "display": "PRIVATE DENTAL PRACTICE"
+                        },
+                        {
+                            "code": "149",
+                            "display": "WELSH LOCAL HEALTH BOARD SITE"
+                        },
+                        {
+                            "code": "11",
+                            "display": "LA - METROPOLITAN DISTRICT"
+                        },
+                        {
+                            "code": "37",
+                            "display": "METROPOLITAN DISTRICT"
+                        },
+                        {
+                            "code": "12",
+                            "display": "LA - INNER LONDON"
+                        },
+                        {
+                            "code": "223",
+                            "display": "LONDON BOROUGH"
+                        },
+                        {
+                            "code": "67",
+                            "display": "SPECIALISED COMMISSIONING GROUP"
+                        },
+                        {
+                            "code": "30",
+                            "display": "RESEARCH AND DEVELOPMENT"
+                        },
+                        {
+                            "code": "128",
+                            "display": "GOVERNMENT OFFICE REGION"
+                        },
+                        {
+                            "code": "252",
+                            "display": "OPTOMETRY SERVICE PRESCRIBING COST CENTRE"
+                        },
+                        {
+                            "code": "82",
+                            "display": "PRISON PRESCRIBING COST CENTRE"
+                        },
+                        {
+                            "code": "162",
+                            "display": "OTHER STATUTORY AUTHORITY (OSA)"
+                        },
+                        {
+                            "code": "93",
+                            "display": "APPLICATION SERVICE PROVIDER - LEGACY"
+                        },
+                        {
+                            "code": "116",
+                            "display": "EXECUTIVE AGENCY"
+                        },
+                        {
+                            "code": "117",
+                            "display": "EDUCATION"
+                        },
+                        {
+                            "code": "36",
+                            "display": "DISTRICT COUNCIL"
+                        },
+                        {
+                            "code": "39",
+                            "display": "METROPOLITAN DISTRICT COUNCIL"
+                        },
+                        {
+                            "code": "71",
+                            "display": "PRIVATELY OWNED ENTITY"
+                        },
+                        {
+                            "code": "34",
+                            "display": "BOROUGH COUNCIL"
+                        },
+                        {
+                            "code": "316",
+                            "display": "SPECIAL SCHOOLS EYE CARE SERVICE PROVIDER"
+                        },
+                        {
+                            "code": "134",
+                            "display": "HEALTH OBSERVATORY"
+                        },
+                        {
+                            "code": "35",
+                            "display": "CITY COUNCIL"
+                        },
+                        {
+                            "code": "131",
+                            "display": "GOVERNMENT DEPARTMENT SITE"
+                        },
+                        {
+                            "code": "158",
+                            "display": "NON STATUTORY NHS ORGANISATION"
+                        },
+                        {
+                            "code": "147",
+                            "display": "LSP SITE"
+                        },
+                        {
+                            "code": "38",
+                            "display": "COUNCIL"
+                        },
+                        {
+                            "code": "154",
+                            "display": "NORTHERN IRELAND HEALTH AND SOCIAL CARE TRUST"
+                        },
+                        {
+                            "code": "159",
+                            "display": "NATIONAL APPLICATION SERVICE PROVIDER"
+                        },
+                        {
+                            "code": "89",
+                            "display": "EXECUTIVE AGENCY PROGRAMME - DEPARTMENT"
+                        },
+                        {
+                            "code": "102",
+                            "display": "CLINICAL NETWORK"
+                        },
+                        {
+                            "code": "103",
+                            "display": "CANCER NETWORK"
+                        },
+                        {
+                            "code": "266",
+                            "display": "EXTENDED ACCESS PROVIDER"
+                        },
+                        {
+                            "code": "153",
+                            "display": "NORTHERN IRELAND HEALTH & SOCIAL CARE BOARD"
+                        },
+                        {
+                            "code": "267",
+                            "display": "EXTENDED ACCESS HUB"
+                        },
+                        {
+                            "code": "168",
+                            "display": "OTHER STATUTORY AUTHORITY SITE"
+                        },
+                        {
+                            "code": "69",
+                            "display": "IMMIGRATION REMOVAL CENTRE"
+                        },
+                        {
+                            "code": "155",
+                            "display": "NORTHERN IRELAND LOCAL COMMISSIONING GROUP"
+                        },
+                        {
+                            "code": "136",
+                            "display": "STRATEGIC HEALTH AUTHORITY SITE"
+                        },
+                        {
+                            "code": "319",
+                            "display": "SUB ICB LOCATION"
+                        },
+                        {
+                            "code": "211",
+                            "display": "SPECIALISED COMMISSIONING HUB"
+                        },
+                        {
+                            "code": "218",
+                            "display": "COMMISSIONING HUB"
+                        },
+                        {
+                            "code": "213",
+                            "display": "COMMISSIONING SUPPORT UNIT"
+                        },
+                        {
+                            "code": "215",
+                            "display": "HOSTS DATA MANAGMENT INTEGRATION CENTRE (DMIC)"
+                        },
+                        {
+                            "code": "99",
+                            "display": "CLINICAL COMMISSIONING GROUP SITE"
+                        },
+                        {
+                            "code": "216",
+                            "display": "DATA SERVICES FOR COMMISSIONERS REGIONAL OFFICE (DSCRO)"
+                        },
+                        {
+                            "code": "214",
+                            "display": "COMMISSIONING SUPPORT UNIT SITE"
+                        },
+                        {
+                            "code": "212",
+                            "display": "NHS ENGLAND (REGION, LOCAL OFFICE) SITE"
+                        },
+                        {
+                            "code": "217",
+                            "display": "DSCRO SITE"
+                        },
+                        {
+                            "code": "220",
+                            "display": "SECURE TRAINING CENTRE"
+                        },
+                        {
+                            "code": "190",
+                            "display": "SCOTTISH HEALTH BOARD"
+                        },
+                        {
+                            "code": "227",
+                            "display": "SCOTTISH GP PRACTICE"
+                        },
+                        {
+                            "code": "229",
+                            "display": "NON RESIDENTIAL INSTITUTION"
+                        },
+                        {
+                            "code": "235",
+                            "display": "COURT"
+                        },
+                        {
+                            "code": "233",
+                            "display": "CONSTABULARY"
+                        },
+                        {
+                            "code": "234",
+                            "display": "POLICE CUSTODY SUITE"
+                        },
+                        {
+                            "code": "260",
+                            "display": "YOUNG OFFENDER INSTITUTION PRESCRIBING COST CENTRE"
+                        },
+                        {
+                            "code": "83",
+                            "display": "RESIDENTIAL INSTITUTION"
+                        },
+                        {
+                            "code": "228",
+                            "display": "YOUNG OFFENDER INSTITUTION"
+                        },
+                        {
+                            "code": "232",
+                            "display": "IMMIGRATION REMOVAL CENTRE"
+                        },
+                        {
+                            "code": "230",
+                            "display": "SECURE TRAINING CENTRE"
+                        },
+                        {
+                            "code": "231",
+                            "display": "SECURE CHILDREN'S HOME"
+                        },
+                        {
+                            "code": "251",
+                            "display": "IMMIGRATION REMOVAL CENTRE PRESCRIBING COST CENTRE"
+                        },
+                        {
+                            "code": "94",
+                            "display": "APPLIANCE CONTRACTOR"
+                        },
+                        {
+                            "code": "101",
+                            "display": "SOCIAL CARE SITE"
+                        },
+                        {
+                            "code": "269",
+                            "display": "CARE HOME"
+                        },
+                        {
+                            "code": "270",
+                            "display": "DOMICILIARY CARE"
+                        },
+                        {
+                            "code": "256",
+                            "display": "SECURE CHILDREN'S HOME PRESCRIBING COST CENTRE"
+                        },
+                        {
+                            "code": "257",
+                            "display": "SECURE TRAINING CENTRE PRESCRIBING COST CENTRE"
+                        },
+                        {
+                            "code": "262",
+                            "display": "SUSTAINABILITY TRANSFORMATION PARTNERSHIP"
+                        },
+                        {
+                            "code": "318",
+                            "display": "INTEGRATED CARE BOARD"
+                        },
+                        {
+                            "code": "236",
+                            "display": "SEXUAL ASSAULT REFERRAL CENTRE"
+                        },
+                        {
+                            "code": "258",
+                            "display": "SEXUAL ASSAULT REFERRAL CENTRE PRESCRIBING COST CE"
+                        },
+                        {
+                            "code": "273",
+                            "display": "COMBINED AUTHORITY"
+                        },
+                        {
+                            "code": "274",
+                            "display": "LOCAL HEALTH AND CARE RECORD EXEMPLAR"
+                        },
+                        {
+                            "code": "275",
+                            "display": "SMHPC - CYPMHS TIER 4"
+                        },
+                        {
+                            "code": "276",
+                            "display": "SMHPC - ADULT EATING DISORDERS"
+                        },
+                        {
+                            "code": "277",
+                            "display": "SMHPC - ADULT SECURE SERVICES"
+                        },
+                        {
+                            "code": "221",
+                            "display": "SCHOOL"
+                        },
+                        {
+                            "code": "286",
+                            "display": "COMMUNITY SPECIAL SCHOOL"
+                        },
+                        {
+                            "code": "281",
+                            "display": "COMMUNITY SCHOOL"
+                        },
+                        {
+                            "code": "283",
+                            "display": "VOLUNTARY CONTROLLED SCHOOL"
+                        },
+                        {
+                            "code": "282",
+                            "display": "VOLUNTARY AIDED SCHOOL"
+                        },
+                        {
+                            "code": "289",
+                            "display": "OTHER INDEPENDENT SCHOOL"
+                        },
+                        {
+                            "code": "292",
+                            "display": "LOCAL AUTHORITY NURSERY SCHOOL"
+                        },
+                        {
+                            "code": "291",
+                            "display": "PUPIL REFERRAL UNIT"
+                        },
+                        {
+                            "code": "284",
+                            "display": "FOUNDATION SCHOOL"
+                        },
+                        {
+                            "code": "290",
+                            "display": "FOUNDATION SPECIAL SCHOOL"
+                        },
+                        {
+                            "code": "288",
+                            "display": "OTHER INDEPENDENT SPECIAL SCHOOL"
+                        },
+                        {
+                            "code": "285",
+                            "display": "CITY TECHNOLOGY COLLEGE"
+                        },
+                        {
+                            "code": "287",
+                            "display": "NON-MAINTAINED SPECIAL SCHOOL"
+                        },
+                        {
+                            "code": "297",
+                            "display": "ACADEMY SPONSOR LED"
+                        },
+                        {
+                            "code": "293",
+                            "display": "FURTHER EDUCATION"
+                        },
+                        {
+                            "code": "296",
+                            "display": "MISCELLANEOUS"
+                        },
+                        {
+                            "code": "314",
+                            "display": "INSTITUTION FUNDED BY OTHER GOVERNMENT DEPARTMENT"
+                        },
+                        {
+                            "code": "300",
+                            "display": "SPECIAL POST 16 INSTITUTION"
+                        },
+                        {
+                            "code": "299",
+                            "display": "SIXTH FORM CENTRES"
+                        },
+                        {
+                            "code": "294",
+                            "display": "SECURE UNITS"
+                        },
+                        {
+                            "code": "298",
+                            "display": "HIGHER EDUCATION INSTITUTIONS"
+                        },
+                        {
+                            "code": "302",
+                            "display": "ACADEMY CONVERTER"
+                        },
+                        {
+                            "code": "303",
+                            "display": "FREE SCHOOLS"
+                        },
+                        {
+                            "code": "309",
+                            "display": "ACADEMY ALTERNATIVE PROVISION CONVERTER"
+                        },
+                        {
+                            "code": "307",
+                            "display": "UNIVERSITY TECHNICAL COLLEGE"
+                        },
+                        {
+                            "code": "304",
+                            "display": "FREE SCHOOLS SPECIAL"
+                        },
+                        {
+                            "code": "311",
+                            "display": "ACADEMY SPECIAL CONVERTER"
+                        },
+                        {
+                            "code": "312",
+                            "display": "ACADEMY 16-19 CONVERTER"
+                        },
+                        {
+                            "code": "305",
+                            "display": "FREE SCHOOLS ALTERNATIVE PROVISION"
+                        },
+                        {
+                            "code": "306",
+                            "display": "FREE SCHOOLS 16 TO 19"
+                        },
+                        {
+                            "code": "308",
+                            "display": "STUDIO SCHOOLS"
+                        },
+                        {
+                            "code": "301",
+                            "display": "ACADEMY SPECIAL SPONSOR LED"
+                        },
+                        {
+                            "code": "310",
+                            "display": "ACADEMY ALTERNATIVE PROVISION SPONSOR LED"
+                        },
+                        {
+                            "code": "313",
+                            "display": "ACADEMY 16 TO 19 SPONSOR LED"
+                        },
+                        {
+                            "code": "317",
+                            "display": "COMMUNITY DIAGNOSTIC CENTRE"
+                        },
+                        {
+                            "code": "315",
+                            "display": "NORTHERN IRELAND GP PRACTICE"
+                        },
+                        {
+                            "code": "320",
+                            "display": "ELECTIVE SURGICAL HUB"
+                        },
+                        {
+                            "code": "179",
+                            "display": "PRIMARY CARE TRUST"
+                        },
+                        {
+                            "code": "171",
+                            "display": "PRIMARY CARE GROUP"
+                        },
+                        {
+                            "code": "98",
+                            "display": "CLINICAL COMMISSIONING GROUP"
+                        },
+                        {
+                            "code": "272",
+                            "display": "PRIMARY CARE NETWORK"
+                        },
+                        {
+                            "code": "76",
+                            "display": "GP PRACTICE"
+                        },
+                        {
+                            "code": "177",
+                            "display": "PRESCRIBING COST CENTRE"
+                        },
+                        {
+                            "code": "72",
+                            "display": "OTHER PRESCRIBING COST CENTRE"
+                        },
+                        {
+                            "code": "210",
+                            "display": "NHS ENGLAND (REGION, LOCAL OFFICE)"
+                        },
+                        {
+                            "code": "181",
+                            "display": "PHARMACY HEADQUARTER"
+                        },
+                        {
+                            "code": "261",
+                            "display": "STRATEGIC PARTNERSHIP"
+                        },
+                        {
+                            "code": "182",
+                            "display": "PHARMACY"
+                        },
+                        {
+                            "code": "157",
+                            "display": "NON-NHS ORGANISATION"
+                        },
+                        {
+                            "code": "104",
+                            "display": "SOCIAL CARE PROVIDER"
+                        },
+                        {
+                            "code": "172",
+                            "display": "INDEPENDENT SECTOR HEALTHCARE PROVIDER"
+                        },
+                        {
+                            "code": "250",
+                            "display": "HOSPITAL SERVICE PRESCRIBING COST CENTRE"
+                        },
+                        {
+                            "code": "197",
+                            "display": "NHS TRUST"
+                        },
+                        {
+                            "code": "198",
+                            "display": "NHS TRUST SITE"
+                        },
+                        {
+                            "code": "176",
+                            "display": "INDEPENDENT SECTOR H/C PROVIDER SITE"
+                        },
+                        {
+                            "code": "279",
+                            "display": "COVID VACCINATION CENTRE"
+                        },
+                        {
+                            "code": "280",
+                            "display": "PHARMACY SITE"
+                        },
+                        {
+                            "code": "96",
+                            "display": "BRANCH SURGERY"
+                        },
+                        {
+                            "code": "166",
+                            "display": "OPTICAL HEADQUARTERS"
+                        },
+                        {
+                            "code": "167",
+                            "display": "OPTICAL SITE"
+                        },
+                        {
+                            "code": "110",
+                            "display": "GENERAL DENTAL PRACTICE"
+                        },
+                        {
+                            "code": "107",
+                            "display": "CARE TRUST"
+                        },
+                        {
+                            "code": "247",
+                            "display": "COMMUNITY HEALTH SERVICE PRESCRIBING COST CENTRE"
+                        },
+                        {
+                            "code": "141",
+                            "display": "LOCAL AUTHORITY"
+                        },
+                        {
+                            "code": "255",
+                            "display": "PUBLIC HEALTH SERVICE PRESCRIBING COST CENTRE"
+                        }
+                    ]
+                }
               
         '4XX':
           description: |
