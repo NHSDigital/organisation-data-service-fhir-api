@@ -677,3 +677,84 @@ paths:
             |------------ |---------------- |-----------    |-------------------------- |---------------------- |
             | 404         | error           | not-found     | NO_RECORD_FOUND           | No record found |
             
+  /ValueSet/{id}:
+    get:
+      summary: Get Valueset
+      
+      operationId: get-valueset-specified-id
+      description: |
+        ## Overview
+        Use this endpoint to return a single ValueSet for the specified id.
+        
+      parameters:
+        - in: path
+          name: id
+          description: |
+            The id for the ValueSet.
+          required: true
+          schema:
+            type: string
+            example: 'ODSAPI-OrganizationRole-1'                           
+      responses:
+        '200':
+          description: Valid request that returns a single ValueSet for the specied id.
+          content:
+            application/fhir+json:
+              example: {}
+              
+        '4XX':
+          description: |
+            An error occurred as follows:
+            
+            | HTTP Code   | issue.severity  | issue.code    | issue.details.code        | issue.details.display |
+            |------------ |---------------- |-----------    |-------------------------- |---------------------- |
+            | 404         | error           | not-found     | NO_RECORD_FOUND           | No record found |
+          
+  /metadata:
+    get:
+      summary: Get metadata
+      
+      operationId: get-capability-statement
+      description: |
+        ## Overview
+        A Capability Statement is a set of capabilities of a FHIR Server that may be used as a statement of actual server functionality or a statement of required or desired server implementation.
+        
+      responses:
+        '200':
+          description: Retrieved the Capability Statement from the FHIR Server
+          content:
+            application/fhir+json:
+              example: {}
+                   
+  /codesystem/{id}:
+    get:
+      summary: Get CodeSystem
+      
+      operationId: get-codesystem-id
+      description: |
+        ## Overview
+        Return a single CodeSystem for a specified id.
+      
+      parameters:
+        - in: path
+          name: id
+          description: |
+            The id for a CodeSystem
+          required: true
+          schema:
+            type: string
+            example: 'ODSAPI-OrganizationRecordClass-1'                                 
+      responses:
+        '200':
+          description: Returned the CodeSystem
+          content:
+            application/fhir+json:
+              example: {}
+              
+        '4XX':
+          description: |
+            An error occurred as follows:
+            
+            | HTTP Code   | issue.severity  | issue.code    | issue.details.code        | issue.details.display |
+            |------------ |---------------- |-----------    |-------------------------- |---------------------- |
+            | 404         | error           | not-found     | NO_RECORD_FOUND           | No record found |
