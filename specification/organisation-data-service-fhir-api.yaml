@@ -120,7 +120,8 @@ info:
 
     | Resource | Description | Links |
     | ODS FHIR API specification | Source code for the OAS specification for this API | [GitHub repo](https://github.com/NHSDigital/organisation-data-service-fhir-api/tree/AMP-2205-add-open-source-to-spec) |
-    | NHSnames | Utiliti to decapitalise NHS organisation names as retrieved from ODS | [Code](https://gitlab.com/polc1410/nhsnames) \| [Docs](https://polc1410.gitlab.io/nhsnames/index.html) |
+    | FHIR libraries and SDKs | Various open source libraries for integrating with FHIR APIs | [Docs](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir-libraries-and-sdks) |
+    | NHSnames | Utility to decapitalise NHS organisation names as retrieved from ODS | [Code](https://gitlab.com/polc1410/nhsnames) \| [Docs](https://polc1410.gitlab.io/nhsnames/index.html) |
     
     ## Errors
     We use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:
