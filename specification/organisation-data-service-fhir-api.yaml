@@ -116,9 +116,10 @@ info:
     We generally use open-access APIs for public data, where security is not a concern. Our open-access APIs are generally RESTful APIs. For more details on how to access them, see our [open-access REST API tutorial](https://https://digital.nhs.uk/developer/guides-and-documentation/tutorials/open-access-rest-api-tutorial).
     
     ## Open source
-    You might find the following open source resources useful:
+    You might find the following [open source](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#open-source) resources useful:
 
     | Resource | Description | Links |
+    | - | - | - |
     | ODS FHIR API specification | Source code for the OAS specification for this API | [GitHub repo](https://github.com/NHSDigital/organisation-data-service-fhir-api/tree/AMP-2205-add-open-source-to-spec) |
     | FHIR libraries and SDKs | Various open source libraries for integrating with FHIR APIs | [Docs](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir-libraries-and-sdks) |
     | NHSnames | Utility to decapitalise NHS organisation names as retrieved from ODS | [Code](https://gitlab.com/polc1410/nhsnames) \| [Docs](https://polc1410.gitlab.io/nhsnames/index.html) |
