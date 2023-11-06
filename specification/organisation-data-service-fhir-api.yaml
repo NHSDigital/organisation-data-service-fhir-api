@@ -116,7 +116,7 @@ info:
     We generally use open-access APIs for public data, where security is not a concern. Our open-access APIs are generally RESTful APIs. For more details on how to access them, see our [open-access REST API tutorial](https://https://digital.nhs.uk/developer/guides-and-documentation/tutorials/open-access-rest-api-tutorial).
     
     ## Open source
-    You might find the following open source resources useful:
+    You might find the following [open source](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#open-source) resources useful:
 
     | Resource | Description | Links |
     | - | - | - |
