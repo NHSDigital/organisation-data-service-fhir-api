@@ -35,7 +35,7 @@ apigee:
 {% set NAME = 'organisation-data-service-fhir-api-' + ENV.name %}
   - name: {{ ENV.name }}
     specs:
-      - name: {{ NAME }}-r4
+      - name: {{ NAME }}
         path: organisation-data-service-fhir-r4-api.json
       - name: {{ NAME }}-stu3
         path: organisation-data-service-fhir-stu3-api.json
