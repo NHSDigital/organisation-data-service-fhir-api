@@ -32,8 +32,8 @@ apigee:
   environments:
 {% for ENV in APIGEE_ENVIRONMENTS %}
 {% set TITLE = 'organisation-data-service-fhir-api (' + ENV.display_name + ' Environment)' %}
-{% set NAME_R4 = 'organisation-data-service-fhir-api-r4' + ENV.name %}
-{% set NAME_STU3 = 'organisation-data-service-fhir-api-stu3' + ENV.name %}
+{% set NAME_R4 = 'organisation-data-service-fhir-api-r4-' + ENV.name %}
+{% set NAME_STU3 = 'organisation-data-service-fhir-api-stu3-' + ENV.name %}
   - name: {{ ENV.name }}
     specs:
       - name: {{ NAME_R4 }}
