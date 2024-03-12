@@ -32,10 +32,12 @@ meta:
 apigee:
   environments:
 {% for ENV in APIGEE_ENVIRONMENTS %}
+{% set NAME_R4 = 'organisation-data-service-fhir-rfour-api-' + ENV.name %}
+{% set NAME_STU3 = 'organisation-data-service-fhir-stuthree-api-' + ENV.name %}
   - name: {{ ENV.name }}
     specs:
-      - name: {{ SERVICE_NAME }}-{{ ENV.name }}
+      - name: {{ NAME_R4 }}
         path: organisation-data-service-fhir-r4-api.json
-      - name: {{ SERVICE_NAME }}-stu3-{{ ENV.name }}
+      - name: {{ NAME_STU3 }}
         path: organisation-data-service-fhir-stu3-api.json
 {% endfor %}
