@@ -1,3 +1,4 @@
+SERVICE_NAME: organisation-data-service-fhir-api
 APIGEE_ENVIRONMENTS:
   - name: internal-dev
     display_name: Internal Development
@@ -31,12 +32,10 @@ meta:
 apigee:
   environments:
 {% for ENV in APIGEE_ENVIRONMENTS %}
-{% set TITLE = 'organisation-data-service-fhir-api (' + ENV.display_name + ' Environment)' %}
-{% set NAME = 'organisation-data-service-fhir-api-' + ENV.name %}
   - name: {{ ENV.name }}
     specs:
-      - name: {{ NAME }}
+      - name: {{ SERVICE_NAME }}-{{ ENV.name }}
         path: organisation-data-service-fhir-r4-api.json
-      - name: {{ NAME }}-stu3
+      - name: {{ SERVICE_NAME }}-stu3-{{ ENV.name }}
         path: organisation-data-service-fhir-stu3-api.json
 {% endfor %}
