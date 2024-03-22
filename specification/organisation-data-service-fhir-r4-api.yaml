@@ -16,7 +16,7 @@ info:
     
     The FHIR API contains the majority of ODS Content, including Organisations, practitioners and geographic information. It contains all the content found within the [ODS ORD API](http://digital.nhs.uk/developer/api-catalogue/organisation-data-service-ord) and the [ODS STU3 API](https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-fhir)
     
-    ODS holds information for many different types of organisation related to health and social care – mostly in England but also in Wales. For the full scope of data coverage of the ODS APIs, see [Organisation Data Service - data coverage](https://digital.nhs.uk/services/organisation-data-service/ods-data-coverage). 
+    ODS holds information for many different types of organisation related to health and social care – mostly in England but also other countries depending on the type of Organisation. For the full scope of data coverage of the ODS APIs, see [Organisation Data Service - data coverage](https://digital.nhs.uk/services/organisation-data-service/ods-data-coverage). 
 
     Every organisation in ODS has a unique identifier called an ODS code. 
 
@@ -32,16 +32,16 @@ info:
 
     You can also limit the number of results returned, or just request a count of the number of search results.
 
-    For Every Postcode within the NHS Postcode Directory, we have compiled a CodeSystem which contains the postcode along with its key Health and Social Care boundaries, including, Primary Care Organisations, Integrated Care Boards,  Local Authority 2011 Lower Super Output Areas (LSOA11), Cancer Alliances and NHS England Regions 
+    For every postcode within the NHS Postcode Directory, we have compiled a CodeSystem which contains the postcode along with its key Health and Social Care boundaries, including, Primary Care Organisations, Integrated Care Boards,  Local Authority 2011 Lower Super Output Areas (LSOA11), Cancer Alliances and NHS England Regions 
 
     This FHIR API makes use of the Organization and OrganizationAffiliation FHIR resources plus range of CodeSystems to deliver the full suite of data, which you will use will depend on your need. 
     
     
-    To access the Organistion attributes which are not include in the Organization resource use the ods-organization-code CodeSystem. The CodeSystem resource returns the following additional information:
+    To access the Organistion attributes which are not included in the Organization resource use the ods-organization-code CodeSystem. The CodeSystem resource returns the following additional information:
 
       - organisation – Assigning Authority 
       - related entities, the current related entity of any supported relationships 
-      - Succession - any predecessors and/or successors and a flag to indicate the successor has also been succeeded 
+      - succession - any predecessors and/or successors and a flag to indicate the successor has also been succeeded 
       - geographic - the appropriate mapping from the postcode dataset including Local Authority, Integrated Care Board or Lower Super Output Area (LSOA) 
 
     In Addition to the ods-organisation-code CodeSystem, there are also CodeSystems for:
@@ -104,7 +104,7 @@ info:
     ## Technology
     This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#basic-rest).
     
-    It also conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#fhir) global standard for health care data exchange. Specifically to FHIR R4 (v4.0.1), we are currently working on draft profiles and implementation guidance will be available soon.
+    It also conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#fhir) global standard for health care data exchange. Specifically to FHIR R4 (v4.0.1), we have been working closely with the Interoperability team to develop and publish [Implementation guidance](https://simplifier.net/guide/organisation-data-services).
     
     You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules. In particular:
     - resource names are capitalised, singular and in American English, for example `/Organization` not `/organisations`
@@ -156,9 +156,9 @@ info:
     
 
 servers:
-  - url: 'https://https://beta.ods.dc4h.link/fhir/'
+  - url: 'https://beta.ods.dc4h.link/fhir/'
     description: User acceptance test (UAT) environment.
-  - url: 'https://https://jenkins.ods.dc4h.link/fhir/'
+  - url: 'https://jenkins.ods.dc4h.link/fhir/'
     description: Production environment.   
     
 paths:
@@ -169,40 +169,70 @@ paths:
       operationId: get-organization-resources
       description: |
         ## Overview
-        Use this endpoint to search for an organisation in ODS.
+        Use this endpoint to search for organisations or sites. Site codes which are supported for certain organisations can also be accessed here, there is no separate endpoint for sites. A FHIR Organization resource will be provided for each search result.
+        
+        You can search for information about an organisation using one or more of their: 
+
+          * ODS code 
+          * last Change date 
+          * name 
+          * active or inactive status 
+          * address, city or postcode  
+          * organisation's primary role using RoleID, such as RO197 (NHS Trust) or RO167 (Optical Site) 
+          * organisation's non-primary role using RoleID, such as RO7 (Hospice) or RO318 (Integrated Care Board) 
+          * related organisations using a Relationship ID such as RE4 (commissioned by) or RE6 (operated by) 
+          * presence of Successor or Predecessor information 
+          * geographic values such as Local Authority boundary, Integrated Care Board boundary or Lower Super Output Area (LSOA) 
+
+ 
         
       parameters:
         - in: query
           name: _id
           description: |
-            The organisation's ID - also known as its ODS code. If you already know the ODS code, consider using the 'Get organsiation details' endpoint instead.
+            The organisation’s ODS code.  
+            
+            If you already know the ODS code, use the ‘Get organisation details’ endpoint instead.
+            
           required: false
           schema:
             type: string
-            example: 'RTG'
+            example: 'RR8'
         - in: query
           name: identifier
           description: |
-            The organisation's ID - also known as its ODS code.
-            This parameter is similar to `_id` but can also explicitly include the code system for the ID - which must be `ods-organization-code`.
-            It's included for FHIR compatibility.
+            The organisation's ODS code.  
+            
+            This parameter is similar to `_id` but can also explicitly include the code system for the ID - which must be `ods-organization-code`.  
+            
+            It's included for FHIR compatibility. 
+            
           required: false
           schema:
             type: string
           examples:
             without-code-system:
               summary: 'A search using just the ID:'
-              value: 'RTG'
+              value: 'G81086'
             with-code-system:
               summary: 'A search using the code system and ID:'
-              value: 'https://fhir.nhs.uk/Id/ods-organization-code|RTG'
+              value: 'https://fhir.nhs.uk/Id/ods-organization-code|G81086'
         - in: query
-          name: _lastUpdated
-          description: The date that the organisation was last updated. Only supports matching of updates that happened after the given date, using the prefix `gt` (greater than).
+          name: lastChangeDate
+          description: The date that the organisation record was last modified by ODS. Support greater than, less and equal to. can be compounded.
           required: false
           schema:
             type: string
-            example: 'gt2017-04-01'
+          examples:
+            greater-than:
+                summary: 'Search for changes made after a date'
+                value: 'gt2017-04-01'
+            less-than:
+                summary: 'Search for changes made before a date'
+                value: 'lt2017-04-01'
+            equal-to:
+                summary: 'Search for changes made on a single date'
+                value: '2024-02-06'
         - in: query
           name: name
           description: |
@@ -219,6 +249,7 @@ paths:
           schema:
             type: string
             example: 'Leeds'
+            
         - in: query
           name: name:contains
           description: |
@@ -343,48 +374,829 @@ paths:
             type: string
             example: 'DERBY'
         - in: query
-          name: ods-org-role
+          name: address-country
+          description: |
+            The start of the  organisation's country.
+            
+            Not case sensitive.
+            
+            To search anywhere in the country address, use `address-country:contains`. To search for an exact match, use `address-country:exact`.
+            
+            Search expressions must:
+            - contain a minimum of 2 characters
+            - only include alphanumeric characters and spaces
+          required: false
+          schema:
+            type: string
+            example: 'ENGLAND'
+        - in: query
+          name: roleCode
           description: |
             The organisation's role, based on the ODS organisation role code system.
             
             An organisation in ODS can have one or many roles.
             
-            To search for organisations that have multiple roles (like an 'AND' operator), include the `ods-org-role` query parameter multiple times. For example:
+            To exclude organisations with a specific role use roleCode:not 
+
+            To search for organisations that have multiple roles (like an 'AND' operator), include the `rolecode` query parameter multiple times. 
             
-            `GET https://directory.spineservices.nhs.uk/STU3/Organization?ods-org-role=76&ods-org-role=177`
-            
-            To search for organisations that have one of several roles (like an 'OR' operator), use a comma separator. For example:
-            
-            `GET https://directory.spineservices.nhs.uk/STU3/Organization?ods-org-role=197,198`
+            To search for organisations that have one of several roles (like an 'OR' operator), use a comma separator. 
             
             You may combine 'AND' and 'OR' searches.
+            
+            To Discover whether a role is primary or non-primary, refer to the ODSOrganisationRelationship CodeSystem 
           required: false
           schema:
             type: string
           examples:
             without-code-system:
-              summary: 'A search using just the role code (197 = NHS trust):'
-              value: '197'
+              summary: 'A search using just the role code (RO197 = NHS trust):'
+              value: 'RO197'
             with-code-system:
               summary: 'A search using the code system and role code:'
-              value: 'https://directory.spineservices.nhs.uk/STU3/STU3/CodeSystem/ODSAPI-OrganizationRole-1|197'
+              value: 'https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole|RO197'
             multiple-roles:
               summary: "A search for multiple roles (like an 'OR' operator):"
-              value: '197,198'
+              value: 'RO197,RO198'
+            coumpound-roles:
+              summary: "A search for multiple roles (like an 'AND' operator):"
+              value: 'roleCode=RO197&roleCode=RO7'
         - in: query
-          name: ods-org-primaryRole
-          description: Whether a role of the organisation is its primary role. Must be used in conjunction with the `ods-org-role` parameter.
-          required: false
-          schema:
-            type: boolean
-            example: 'false'
-        - in: query
-          name: _count
-          description: Number of results to return. The maximum is 20.
+          name: roleCode:not
+          description: | 
+            Exclude organisations from the search results based on their role 
           required: false
           schema:
             type: string
-            example: ''
+          examples: 
+              compound:
+                summary: 'A search combining roleCode and roleCode:not'
+                value: 'roleCode=RO177&roleCode:not=RO76'
+              single:
+                summary: 'A search using the code system and role code:'
+                value: 'roleCode:not=https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole|RO197'
+        - in: query
+          name: activeRoleCode
+          description: |
+            Searches only active roles within the ‘ODS Organisation Role’ CodeSystem 
+
+            To exclude organisations with a specific role use activeRoleCode:not 
+            To search for organisations that have multiple roles (like an 'AND' operator), include the `rolecode` query parameter multiple times. 
+            
+            To search for organisations that have one of several roles (like an 'OR' operator), use a comma separator. 
+            
+            You may combine 'AND' and 'OR' searches.
+            
+            To Discover whether a role is primary or non-primary, refer to the ODSOrganisationRelationship CodeSystem 
+          required: false
+          schema:
+            type: string
+          examples:
+            without-code-system:
+              summary: 'A search using just the role code (RO197 = NHS trust):'
+              value: 'RO197'
+            with-code-system:
+              summary: 'A search using the code system and role code:'
+              value: 'https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole|RO197'
+            multiple-roles:
+              summary: "A search for multiple roles (like an 'OR' operator):"
+              value: 'RO197,RO198'
+               
+             
+        - in: query
+          name: _count
+          description: Number of results to return.
+          required: false
+          schema:
+            type: string
+            example: '1000'
+        - in: query
+          name: _summary
+          description: Return a count of the matching resources, without returning the actual matches.
+          required: false
+          schema:
+            type: string
+            enum: [count]
+        - in: query
+          name: _offset
+          description: When used with _count, enables paging through large result sets 
+          required: false
+          schema:
+            type: string
+            example: 2000
+      responses:
+        '200':
+          description: Valid request that returns organization history found that match the search criteria (which may be 0).
+          content:
+            application/fhir+json:
+              example:
+                
+                {
+    "resourceType": "Bundle",
+    "id": "d84a1a14-d90f-4dd7-a5bc-b5e56a81d1af",
+    "meta": {
+        "lastUpdated": "2024-03-14T11:03:31.163+00:00"
+    },
+    "type": "searchset",
+    "link": [
+        {
+            "relation": "self",
+            "url": "https://jenkins.ods.dc4h.link/fhir/Organization?_count=2&lastChangeDate=lt2023-05-04&lastChangeDate=gt2023-05-02"
+        },
+        {
+            "relation": "next",
+            "url": "https://jenkins.ods.dc4h.link/fhir/Organization?_count=2&_offset=2&lastChangeDate=lt2023-05-04&lastChangeDate=gt2023-05-02"
+        }
+    ],
+    "entry": [
+        {
+            "fullUrl": "https://jenkins.ods.dc4h.link/fhir/Organization/AQN",
+            "resource": {
+                "resourceType": "Organization",
+                "id": "AQN",
+                "meta": {
+                    "versionId": "3",
+                    "lastUpdated": "2024-01-23T12:56:03.130+00:00",
+                    "source": "#df0974983053aca7",
+                    "profile": [
+                        "https://fhir.hl7.org.uk/StructureDefinition/UKCore-Organization",
+                        "https://fhir.nhs.uk/England/StructureDefinition/England-Organization-ODS"
+                    ]
+                },
+                "extension": [
+                    {
+                        "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-OrganisationRole",
+                        "extension": [
+                            {
+                                "url": "instanceID",
+                                "valueInteger": 233160
+                            },
+                            {
+                                "url": "roleCode",
+                                "valueCodeableConcept": {
+                                    "coding": [
+                                        {
+                                            "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole",
+                                            "code": "RO172",
+                                            "display": "INDEPENDENT SECTOR HEALTHCARE PROVIDER"
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod",
+                                "extension": [
+                                    {
+                                        "url": "dateType",
+                                        "valueCoding": {
+                                            "system": "https://fhir.nhs.uk/England/CodeSystem/England-PeriodType",
+                                            "code": "Legal",
+                                            "display": "Legal"
+                                        }
+                                    },
+                                    {
+                                        "url": "period",
+                                        "valuePeriod": {
+                                            "start": "2015-04-01"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod",
+                                "extension": [
+                                    {
+                                        "url": "dateType",
+                                        "valueCoding": {
+                                            "system": "https://fhir.nhs.uk/England/CodeSystem/England-PeriodType",
+                                            "code": "Operational",
+                                            "display": "Operational"
+                                        }
+                                    },
+                                    {
+                                        "url": "period",
+                                        "valuePeriod": {
+                                            "start": "2015-04-01"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "url": "active",
+                                "valueBoolean": true
+                            }
+                        ]
+                    },
+                    {
+                        "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedDateTime",
+                        "extension": [
+                            {
+                                "url": "type",
+                                "valueCoding": {
+                                    "system": "https://fhir.nhs.uk/England/CodeSystem/England-ODSDateTime",
+                                    "code": "LastChangeDate",
+                                    "display": "Last Change Date"
+                                }
+                            },
+                            {
+                                "url": "dateTime",
+                                "valueDateTime": "2023-05-03"
+                            }
+                        ]
+                    }
+                ],
+                "identifier": [
+                    {
+                        "use": "official",
+                        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                        "value": "AQN",
+                        "assigner": {
+                            "display": "HSCIC"
+                        }
+                    }
+                ],
+                "active": true,
+                "type": [
+                    {
+                        "coding": [
+                            {
+                                "system": "https://fhir.nhs.uk/England/CodeSystem/England-ODSRecordUseType",
+                                "code": "Full",
+                                "display": "Full"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSRecordClass",
+                                "code": "RC1",
+                                "display": "HSCOrg"
+                            }
+                        ]
+                    }
+                ],
+                "name": "PARTNERING HEALTH LIMITED",
+                "address": [
+                    {
+                        "line": [
+                            "AILSA HOUSE 3 TURNBERRY HOUSE",
+                            "4400 PARKWAY",
+                            "WHITELEY"
+                        ],
+                        "city": "FAREHAM",
+                        "postalCode": "PO15 7FJ",
+                        "country": "ENGLAND"
+                    }
+                ]
+            },
+            "search": {
+                "mode": "match"
+            }
+        },
+        {
+            "fullUrl": "https://jenkins.ods.dc4h.link/fhir/Organization/C4O9I",
+            "resource": {
+                "resourceType": "Organization",
+                "id": "C4O9I",
+                "meta": {
+                    "versionId": "3",
+                    "lastUpdated": "2024-01-23T13:00:38.788+00:00",
+                    "source": "#b71fdedd3d5fad9e",
+                    "profile": [
+                        "https://fhir.hl7.org.uk/StructureDefinition/UKCore-Organization",
+                        "https://fhir.nhs.uk/England/StructureDefinition/England-Organization-ODS"
+                    ]
+                },
+                "extension": [
+                    {
+                        "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-OrganisationRole",
+                        "extension": [
+                            {
+                                "url": "instanceID",
+                                "valueInteger": 503768
+                            },
+                            {
+                                "url": "roleCode",
+                                "valueCodeableConcept": {
+                                    "coding": [
+                                        {
+                                            "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole",
+                                            "code": "RO181",
+                                            "display": "PHARMACY HEADQUARTER"
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod",
+                                "extension": [
+                                    {
+                                        "url": "dateType",
+                                        "valueCoding": {
+                                            "system": "https://fhir.nhs.uk/England/CodeSystem/England-PeriodType",
+                                            "code": "Legal",
+                                            "display": "Legal"
+                                        }
+                                    },
+                                    {
+                                        "url": "period",
+                                        "valuePeriod": {
+                                            "start": "2023-04-28"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod",
+                                "extension": [
+                                    {
+                                        "url": "dateType",
+                                        "valueCoding": {
+                                            "system": "https://fhir.nhs.uk/England/CodeSystem/England-PeriodType",
+                                            "code": "Operational",
+                                            "display": "Operational"
+                                        }
+                                    },
+                                    {
+                                        "url": "period",
+                                        "valuePeriod": {
+                                            "start": "2023-04-28"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "url": "active",
+                                "valueBoolean": true
+                            }
+                        ]
+                    },
+                    {
+                        "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedDateTime",
+                        "extension": [
+                            {
+                                "url": "type",
+                                "valueCoding": {
+                                    "system": "https://fhir.nhs.uk/England/CodeSystem/England-ODSDateTime",
+                                    "code": "LastChangeDate",
+                                    "display": "Last Change Date"
+                                }
+                            },
+                            {
+                                "url": "dateTime",
+                                "valueDateTime": "2023-05-03"
+                            }
+                        ]
+                    }
+                ],
+                "identifier": [
+                    {
+                        "use": "official",
+                        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                        "value": "C4O9I",
+                        "assigner": {
+                            "display": "NHS ENGLAND"
+                        }
+                    }
+                ],
+                "active": true,
+                "type": [
+                    {
+                        "coding": [
+                            {
+                                "system": "https://fhir.nhs.uk/England/CodeSystem/England-ODSRecordUseType",
+                                "code": "Full",
+                                "display": "Full"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSRecordClass",
+                                "code": "RC1",
+                                "display": "HSCOrg"
+                            }
+                        ]
+                    }
+                ],
+                "name": "WM BROWN (KINGSHURST) LIMITED",
+                "address": [
+                    {
+                        "extension": [
+                            {
+                                "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-AddressKey",
+                                "extension": [
+                                    {
+                                        "url": "type",
+                                        "valueCodeableConcept": {
+                                            "coding": [
+                                                {
+                                                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-AddressKeyType",
+                                                    "code": "UPRN",
+                                                    "display": "Unique Property Reference Number"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "url": "value",
+                                        "valueString": "100071397351"
+                                    }
+                                ]
+                            }
+                        ],
+                        "line": [
+                            "228-230 WYCHALL ROAD"
+                        ],
+                        "city": "BIRMINGHAM",
+                        "postalCode": "B31 3AU",
+                        "country": "ENGLAND"
+                    }
+                ]
+            },
+            "search": {
+                "mode": "match"
+            }
+        }
+    ]
+}
+          
+            application/xml:
+              
+              example: |
+                <Bundle xmlns="http://hl7.org/fhir">
+                  <id value="b520b6b6-7a91-4672-8efd-832b9305cb79"/>
+                  <meta>
+                      <lastUpdated value="2024-03-14T11:03:39.425+00:00"/>
+                  </meta>
+                  <type value="searchset"/>
+                  <link>
+                      <relation value="self"/>
+                      <url value="https://jenkins.ods.dc4h.link/fhir/Organization?_count=2&amp;_format=xml&amp;lastChangeDate=lt2023-05-04&amp;lastChangeDate=gt2023-05-02"/>
+                  </link>
+                  <link>
+                      <relation value="next"/>
+                      <url value="https://jenkins.ods.dc4h.link/fhir/Organization?_count=2&amp;_format=xml&amp;_offset=2&amp;lastChangeDate=lt2023-05-04&amp;lastChangeDate=gt2023-05-02"/>
+                  </link>
+                  <entry>
+                      <fullUrl value="https://jenkins.ods.dc4h.link/fhir/Organization/AQN"/>
+                      <resource>
+                          <Organization xmlns="http://hl7.org/fhir">
+                              <id value="AQN"/>
+                              <meta>
+                                  <versionId value="3"/>
+                                  <lastUpdated value="2024-01-23T12:56:03.130+00:00"/>
+                                  <source value="#df0974983053aca7"/>
+                                  <profile value="https://fhir.hl7.org.uk/StructureDefinition/UKCore-Organization"/>
+                                  <profile value="https://fhir.nhs.uk/England/StructureDefinition/England-Organization-ODS"/>
+                              </meta>
+                              <extension url="https://fhir.nhs.uk/England/StructureDefinition/Extension-England-OrganisationRole">
+                                  <extension url="instanceID">
+                                      <valueInteger value="233160"/>
+                                  </extension>
+                                  <extension url="roleCode">
+                                      <valueCodeableConcept>
+                                          <coding>
+                                              <system value="https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole"/>
+                                              <code value="RO172"/>
+                                              <display value="INDEPENDENT SECTOR HEALTHCARE PROVIDER"/>
+                                          </coding>
+                                      </valueCodeableConcept>
+                                  </extension>
+                                  <extension url="https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod">
+                                      <extension url="dateType">
+                                          <valueCoding>
+                                              <system value="https://fhir.nhs.uk/England/CodeSystem/England-PeriodType"/>
+                                              <code value="Legal"/>
+                                              <display value="Legal"/>
+                                          </valueCoding>
+                                      </extension>
+                                      <extension url="period">
+                                          <valuePeriod>
+                                              <start value="2015-04-01"/>
+                                          </valuePeriod>
+                                      </extension>
+                                  </extension>
+                                  <extension url="https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod">
+                                      <extension url="dateType">
+                                          <valueCoding>
+                                              <system value="https://fhir.nhs.uk/England/CodeSystem/England-PeriodType"/>
+                                              <code value="Operational"/>
+                                              <display value="Operational"/>
+                                          </valueCoding>
+                                      </extension>
+                                      <extension url="period">
+                                          <valuePeriod>
+                                              <start value="2015-04-01"/>
+                                          </valuePeriod>
+                                      </extension>
+                                  </extension>
+                                  <extension url="active">
+                                      <valueBoolean value="true"/>
+                                  </extension>
+                              </extension>
+                              <extension url="https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedDateTime">
+                                  <extension url="type">
+                                      <valueCoding>
+                                          <system value="https://fhir.nhs.uk/England/CodeSystem/England-ODSDateTime"/>
+                                          <code value="LastChangeDate"/>
+                                          <display value="Last Change Date"/>
+                                      </valueCoding>
+                                  </extension>
+                                  <extension url="dateTime">
+                                      <valueDateTime value="2023-05-03"/>
+                                  </extension>
+                              </extension>
+                              <identifier>
+                                  <use value="official"/>
+                                  <system value="https://fhir.nhs.uk/Id/ods-organization-code"/>
+                                  <value value="AQN"/>
+                                  <assigner>
+                                      <display value="HSCIC"/>
+                                  </assigner>
+                              </identifier>
+                              <active value="true"/>
+                              <type>
+                                  <coding>
+                                      <system value="https://fhir.nhs.uk/England/CodeSystem/England-ODSRecordUseType"/>
+                                      <code value="Full"/>
+                                      <display value="Full"/>
+                                  </coding>
+                              </type>
+                              <type>
+                                  <coding>
+                                      <system value="https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSRecordClass"/>
+                                      <code value="RC1"/>
+                                      <display value="HSCOrg"/>
+                                  </coding>
+                              </type>
+                              <name value="PARTNERING HEALTH LIMITED"/>
+                              <address>
+                                  <line value="AILSA HOUSE 3 TURNBERRY HOUSE"/>
+                                  <line value="4400 PARKWAY"/>
+                                  <line value="WHITELEY"/>
+                                  <city value="FAREHAM"/>
+                                  <postalCode value="PO15 7FJ"/>
+                                  <country value="ENGLAND"/>
+                              </address>
+                          </Organization>
+                      </resource>
+                      <search>
+                          <mode value="match"/>
+                      </search>
+                  </entry>
+                  <entry>
+                      <fullUrl value="https://jenkins.ods.dc4h.link/fhir/Organization/C4O9I"/>
+                      <resource>
+                          <Organization xmlns="http://hl7.org/fhir">
+                              <id value="C4O9I"/>
+                              <meta>
+                                  <versionId value="3"/>
+                                  <lastUpdated value="2024-01-23T13:00:38.788+00:00"/>
+                                  <source value="#b71fdedd3d5fad9e"/>
+                                  <profile value="https://fhir.hl7.org.uk/StructureDefinition/UKCore-Organization"/>
+                                  <profile value="https://fhir.nhs.uk/England/StructureDefinition/England-Organization-ODS"/>
+                              </meta>
+                              <extension url="https://fhir.nhs.uk/England/StructureDefinition/Extension-England-OrganisationRole">
+                                  <extension url="instanceID">
+                                      <valueInteger value="503768"/>
+                                  </extension>
+                                  <extension url="roleCode">
+                                      <valueCodeableConcept>
+                                          <coding>
+                                              <system value="https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole"/>
+                                              <code value="RO181"/>
+                                              <display value="PHARMACY HEADQUARTER"/>
+                                          </coding>
+                                      </valueCodeableConcept>
+                                  </extension>
+                                  <extension url="https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod">
+                                      <extension url="dateType">
+                                          <valueCoding>
+                                              <system value="https://fhir.nhs.uk/England/CodeSystem/England-PeriodType"/>
+                                              <code value="Legal"/>
+                                              <display value="Legal"/>
+                                          </valueCoding>
+                                      </extension>
+                                      <extension url="period">
+                                          <valuePeriod>
+                                              <start value="2023-04-28"/>
+                                          </valuePeriod>
+                                      </extension>
+                                  </extension>
+                                  <extension url="https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod">
+                                      <extension url="dateType">
+                                          <valueCoding>
+                                              <system value="https://fhir.nhs.uk/England/CodeSystem/England-PeriodType"/>
+                                              <code value="Operational"/>
+                                              <display value="Operational"/>
+                                          </valueCoding>
+                                      </extension>
+                                      <extension url="period">
+                                          <valuePeriod>
+                                              <start value="2023-04-28"/>
+                                          </valuePeriod>
+                                      </extension>
+                                  </extension>
+                                  <extension url="active">
+                                      <valueBoolean value="true"/>
+                                  </extension>
+                              </extension>
+                              <extension url="https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedDateTime">
+                                  <extension url="type">
+                                      <valueCoding>
+                                          <system value="https://fhir.nhs.uk/England/CodeSystem/England-ODSDateTime"/>
+                                          <code value="LastChangeDate"/>
+                                          <display value="Last Change Date"/>
+                                      </valueCoding>
+                                  </extension>
+                                  <extension url="dateTime">
+                                      <valueDateTime value="2023-05-03"/>
+                                  </extension>
+                              </extension>
+                              <identifier>
+                                  <use value="official"/>
+                                  <system value="https://fhir.nhs.uk/Id/ods-organization-code"/>
+                                  <value value="C4O9I"/>
+                                  <assigner>
+                                      <display value="NHS ENGLAND"/>
+                                  </assigner>
+                              </identifier>
+                              <active value="true"/>
+                              <type>
+                                  <coding>
+                                      <system value="https://fhir.nhs.uk/England/CodeSystem/England-ODSRecordUseType"/>
+                                      <code value="Full"/>
+                                      <display value="Full"/>
+                                  </coding>
+                              </type>
+                              <type>
+                                  <coding>
+                                      <system value="https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSRecordClass"/>
+                                      <code value="RC1"/>
+                                      <display value="HSCOrg"/>
+                                  </coding>
+                              </type>
+                              <name value="WM BROWN (KINGSHURST) LIMITED"/>
+                              <address>
+                                  <extension url="https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-AddressKey">
+                                      <extension url="type">
+                                          <valueCodeableConcept>
+                                              <coding>
+                                                  <system value="https://fhir.hl7.org.uk/CodeSystem/UKCore-AddressKeyType"/>
+                                                  <code value="UPRN"/>
+                                                  <display value="Unique Property Reference Number"/>
+                                              </coding>
+                                          </valueCodeableConcept>
+                                      </extension>
+                                      <extension url="value">
+                                          <valueString value="100071397351"/>
+                                      </extension>
+                                  </extension>
+                                  <line value="228-230 WYCHALL ROAD"/>
+                                  <city value="BIRMINGHAM"/>
+                                  <postalCode value="B31 3AU"/>
+                                  <country value="ENGLAND"/>
+                              </address>
+                          </Organization>
+                      </resource>
+                      <search>
+                          <mode value="match"/>
+                      </search>
+                  </entry>
+                </Bundle>
+              
+
+    
+
+        '4XX':
+          description: |
+                An error occurred as follows:
+                
+                | HTTP Code   | issue.severity | issue.code    | issue.details.code  | issue.details.display |
+                |------------ |----------------|---------------|---------------------|---------------------  |
+                |400          |error           |invalid        |HAPI-1940            |Invalid Date/Time/Quantity format |
+                |400          |error           |invalid        |HAPI-0524            |Unknown Search Parameter|
+                |404          |error           |invalid        |HAPI-2001             |Organization not found  |
+                |405          |error           |method not allowed|HAPI-0427         |Method Not Allowed      |
+                |422          |unprocessable   |too-costly     |Too many records requested (Use _count and _offset)|Invalid parameter  |
+                |422          |unprocessable   |processing |No declared filter on Codesystem |An input field has an invalid value for its type  |
+                
+          content:
+            application/fhir+json:
+              example:
+                {
+    "resourceType": "OperationOutcome",
+    "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><h1>Operation Outcome</h1><table border=\"0\"><tr><td style=\"font-weight: bold;\">ERROR</td><td>[]</td><td>HAPI-0524: Unknown search parameter &quot;count&quot; for resource type &quot;Organization&quot;. Valid search parameters for this search are: [_content, _id, _lastUpdated, _profile, _security, _source, _tag, _text, active, activeRoleCode, address, address-city, address-country, address-postalcode, address-state, address-use, endpoint, identifier, lastChangeDate, name, partof, phonetic, roleCode, type]</td></tr></table></div>"
+    },
+    "issue": [
+        {
+            "severity": "error",
+            "code": "processing",
+            "diagnostics": "HAPI-0524: Unknown search parameter \"count\" for resource type \"Organization\". Valid search parameters for this search are: [_content, _id, _lastUpdated, _profile, _security, _source, _tag, _text, active, activeRoleCode, address, address-city, address-country, address-postalcode, address-state, address-use, endpoint, identifier, lastChangeDate, name, partof, phonetic, roleCode, type]"
+        }
+    ]
+}
+            application/xml:
+              example: |
+                <OperationOutcome xmlns="http://hl7.org/fhir">
+                    <text>
+                        <status value="generated"/>
+                        <div xmlns="http://www.w3.org/1999/xhtml">
+                            <h1>Operation Outcome</h1>
+                            <table border="0">
+                                <tr>
+                                    <td style="font-weight: bold;">ERROR</td>
+                                    <td>[]</td>
+                                    <td>HAPI-0524: Unknown search parameter &quot;count&quot; for resource type &quot;Organization&quot;. Valid search parameters for this search are: [_content, _id, _lastUpdated, _profile, _security, _source, _tag, _text, active, activeRoleCode, address, address-city, address-country, address-postalcode, address-state, address-use, endpoint, identifier, lastChangeDate, name, partof, phonetic, roleCode, type]</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </text>
+                    <issue>
+                        <severity value="error"/>
+                        <code value="processing"/>
+                        <diagnostics value="HAPI-0524: Unknown search parameter &quot;count&quot; for resource type &quot;Organization&quot;. Valid search parameters for this search are: [_content, _id, _lastUpdated, _profile, _security, _source, _tag, _text, active, activeRoleCode, address, address-city, address-country, address-postalcode, address-state, address-use, endpoint, identifier, lastChangeDate, name, partof, phonetic, roleCode, type]"/>
+                    </issue>
+                </OperationOutcome>
+                    
+  /Organizationaffiliation:
+    get:
+      summary: Search for a relationship
+      
+      operationId: get-organizationaffiliation-resources
+      description: |
+        ## Overview
+        Use this endpoint to search for relationship records. Most commonly you would use this endpoint to get all the relationships for a given organisation, based on its ODS code. 
+      parameters:
+        - in: query
+          name: _id
+          description: |
+            The organisation's ID - also known as its ODS code. If you already know the ODS code, consider using the 'Get organsiation details' endpoint instead.
+          required: false
+          schema:
+            type: string
+            example: 'RTG'
+        - in: query
+          name: primary-organisation
+          description: |
+            The ‘source’ organisation which has a relationship. 
+
+            referred to as the SourceOrganisation in the ORD schema 
+
+            Must be a valid Organisation code with relationships to return results
+          required: false
+          schema:
+            type: string
+            example: 'G81086'
+            
+        - in: query
+          name: participating-organization 
+          description: |
+            The ‘Target’ or related organisation.  
+
+            Referred to as the TargetOrganisation in the ORD schema 
+            Must be a valid Organisation code with relationships to return results 
+          required: false
+          schema:
+            type: string
+            example: '97R'
+        - in: query
+          name: active
+          description: Whether the organisation's relationship record is still in active use.
+          required: false
+          schema:
+            type: boolean
+            example: 'true'
+        - in: query
+          name: _count
+          description: Number of results to return. 
+          required: false
+          schema:
+            type: string
+            example: '1000'
+        - in: query
+          name: _include
+          description: |
+            enables you return related resources.  
+
+            OrganizationAffiliation:primary-organization will include Organization resource records for the ‘Source’ Organisations in the search results 
+            
+            OrganizationAffiliation:participating-organization will include Organization resource records for all the ‘Target’ Organisations in the search results 
+          required: false
+          schema:
+            type: string
+          examples:
+            primary-organization:
+              summary: Include primary-organization 
+              value: OrganizationAffiliation:primary-organization
+            participating-Organization:
+              summary: Include participating-organization
+              value: OrganizationAffiliation:participating-organization
         - in: query
           name: _summary
           description: Return a count of the matching resources, without returning the actual matches.
@@ -399,140 +1211,310 @@ paths:
             application/fhir+json:
               example:
                 {
-                  "resourceType": "Bundle",
-                  "id": "2fe446ff-6d8e-492c-838a-10007976ae17",
-                  "meta": {
-                      "lastUpdated": "2018-05-01T10:21:05+00:00"
-                  },
-                  "type": "searchset",
-                  "total": "95",
-                  "link": [
-                      {
-                          "relation": "self",
-                          "url": "https://directory.spineservices.nhs.uk/STU3/Organization?name=leeds&_count=1&_page=1"
-                      },
-                      {
-                          "relation": "first",
-                          "url": "https://directory.spineservices.nhs.uk/STU3/Organization?name=leeds&_count=1&_page=1"
-                      },
-                      {
-                          "relation": "last",
-                          "url": "https://directory.spineservices.nhs.uk/STU3/Organization?name=leeds&_count=1&_page=95"
-                      },
-                      {
-                          "relation": "next",
-                          "url": "https://directory.spineservices.nhs.uk/STU3/Organization?name=leeds&_count=1&_page=2"
-                      }
-                  ],
-                  "entry": [
-                      {
-                          "fullUrl": "https://directory.spineservices.nhs.uk/STU3/Organization/03CAR",
-                          "resource": {
-                              "resourceType": "Organization",
-                              "id": "03CAR",
-                              "meta": {
-                                  "lastUpdated": "2018-04-19T00:00:00+00:00",
-                                  "profile": "https://fhir.nhs.uk/STU3/StructureDefinition/ODSAPI-Organization-1"
-                              },
-                              "extension": [
-                                  {
-                                      "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-ActivePeriod-1",
-                                      "valuePeriod": {
-                                          "extension": [
-                                              {
-                                                  "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-DateType-1",
-                                                  "valueString": "Operational"
-                                              }
-                                          ],
-                                          "start": "2013-10-01"
-                                      }
-                                  },
-                                  {
-                                      "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-ActivePeriod-1",
-                                      "valuePeriod": {
-                                          "extension": [
-                                              {
-                                                  "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-DateType-1",
-                                                  "valueString": "Legal"
-                                              }
-                                          ],
-                                          "start": "2013-10-01",
-                                          "end": "2018-03-31"
-                                      }
-                                  },
-                                  {
-                                      "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-OrganizationRole-1",
-                                      "extension": [
-                                          {
-                                              "url": "role",
-                                              "valueCoding": {
-                                                  "system": "https://directory.spineservices.nhs.uk/STU3/CodeSystem/ODSAPI-OrganizationRole-1",
-                                                  "code": "99",
-                                                  "display": "CLINICAL COMMISSIONING GROUP SITE"
-                                              }
-                                          },
-                                          {
-                                              "url": "primaryRole",
-                                              "valueBoolean": true
-                                          },
-                                          {
-                                              "url": "activePeriod",
-                                              "valuePeriod": {
-                                                  "extension": [
-                                                      {
-                                                          "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-DateType-1",
-                                                          "valueString": "Operational"
-                                                      }
-                                                  ],
-                                                  "start": "2013-10-01"
-                                              }
-                                          },
-                                          {
-                                              "url": "activePeriod",
-                                              "valuePeriod": {
-                                                  "extension": [
-                                                      {
-                                                          "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-DateType-1",
-                                                          "valueString": "Legal"
-                                                      }
-                                                  ],
-                                                  "start": "2013-10-01",
-                                                  "end": "2018-03-31"
-                                              }
-                                          },
-                                          {
-                                              "url": "status",
-                                              "valueString": "Active"
-                                          }
-                                      ]
-                                  }
-                              ],
-                              "identifier": {
-                                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                                  "value": "03CAR"
-                              },
-                              "active": true,
-                              "type": {
-                                  "coding": {
-                                      "system": "https://fhir.nhs.uk/STU3/CodeSystem/ODSAPI-OrganizationRecordClass-1",
-                                      "code": "2",
-                                      "display": "HSCSite"
-                                  }
-                              },
-                              "name": "LEEDS WEST CCG (HQ)",
-                              "address": {
-                                  "line": [
-                                      "UNITS 2-4 WIRA BUSINESS PARK"
-                                  ],
-                                  "city": "LEEDS",
-                                  "district": "WEST YORKSHIRE",
-                                  "postalCode": "LS16 6EB",
-                                  "country": "ENGLAND"
-                              }
-                          }
-                      }
-                  ]
-              }
+    "resourceType": "Bundle",
+    "id": "3a286c55-83c9-4869-aaf1-c69186656ade",
+    "meta": {
+        "lastUpdated": "2024-03-15T10:47:18.746+00:00"
+    },
+    "type": "searchset",
+    "total": 3,
+    "link": [
+        {
+            "relation": "self",
+            "url": "https://jenkins.ods.dc4h.link/fhir/OrganizationAffiliation?primary-organization=FDC49"
+        }
+    ],
+    "entry": [
+        {
+            "fullUrl": "https://jenkins.ods.dc4h.link/fhir/OrganizationAffiliation/383689",
+            "resource": {
+                "resourceType": "OrganizationAffiliation",
+                "id": "383689",
+                "meta": {
+                    "versionId": "3",
+                    "lastUpdated": "2024-01-23T15:40:47.090+00:00",
+                    "source": "#72eb666ff3d30383",
+                    "profile": [
+                        "https://fhir.hl7.org.uk/StructureDefinition/UKCore-OrganizationAffiliation",
+                        "https://fhir.nhs.uk/England/StructureDefinition/England-OrganizationAffiliation-ODS"
+                    ]
+                },
+                "extension": [
+                    {
+                        "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod",
+                        "extension": [
+                            {
+                                "url": "dateType",
+                                "valueCoding": {
+                                    "system": "https://fhir.nhs.uk/England/CodeSystem/England-PeriodType",
+                                    "code": "Legal",
+                                    "display": "Legal"
+                                }
+                            },
+                            {
+                                "url": "period",
+                                "valuePeriod": {
+                                    "start": "2015-05-11",
+                                    "end": "2020-03-31"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod",
+                        "extension": [
+                            {
+                                "url": "dateType",
+                                "valueCoding": {
+                                    "system": "https://fhir.nhs.uk/England/CodeSystem/England-PeriodType",
+                                    "code": "Operational",
+                                    "display": "Operational"
+                                }
+                            },
+                            {
+                                "url": "period",
+                                "valuePeriod": {
+                                    "start": "2015-05-11",
+                                    "end": "2020-03-31"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "identifier": [
+                    {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/organization-relationship-instance",
+                        "value": "383689"
+                    }
+                ],
+                "active": false,
+                "period": {
+                    "start": "2015-05-11",
+                    "end": "2020-03-31"
+                },
+                "organization": {
+                    "reference": "Organization/FDC49",
+                    "identifier": {
+                        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                        "value": "FDC49"
+                    }
+                },
+                "participatingOrganization": {
+                    "reference": "Organization/Q72",
+                    "identifier": {
+                        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                        "value": "Q72"
+                    }
+                },
+                "code": [
+                    {
+                        "coding": [
+                            {
+                                "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSRelationship",
+                                "code": "RE5",
+                                "display": "IS LOCATED IN THE GEOGRAPHY OF"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "search": {
+                "mode": "match"
+            }
+        },
+        {
+            "fullUrl": "https://jenkins.ods.dc4h.link/fhir/OrganizationAffiliation/648449",
+            "resource": {
+                "resourceType": "OrganizationAffiliation",
+                "id": "648449",
+                "meta": {
+                    "versionId": "3",
+                    "lastUpdated": "2024-01-23T17:00:12.326+00:00",
+                    "source": "#033821a3d00d51fe",
+                    "profile": [
+                        "https://fhir.hl7.org.uk/StructureDefinition/UKCore-OrganizationAffiliation",
+                        "https://fhir.nhs.uk/England/StructureDefinition/England-OrganizationAffiliation-ODS"
+                    ]
+                },
+                "extension": [
+                    {
+                        "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod",
+                        "extension": [
+                            {
+                                "url": "dateType",
+                                "valueCoding": {
+                                    "system": "https://fhir.nhs.uk/England/CodeSystem/England-PeriodType",
+                                    "code": "Legal",
+                                    "display": "Legal"
+                                }
+                            },
+                            {
+                                "url": "period",
+                                "valuePeriod": {
+                                    "start": "2020-04-01",
+                                    "end": "2020-09-22"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod",
+                        "extension": [
+                            {
+                                "url": "dateType",
+                                "valueCoding": {
+                                    "system": "https://fhir.nhs.uk/England/CodeSystem/England-PeriodType",
+                                    "code": "Operational",
+                                    "display": "Operational"
+                                }
+                            },
+                            {
+                                "url": "period",
+                                "valuePeriod": {
+                                    "start": "2020-04-01",
+                                    "end": "2020-09-22"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "identifier": [
+                    {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/organization-relationship-instance",
+                        "value": "648449"
+                    }
+                ],
+                "active": false,
+                "period": {
+                    "start": "2020-04-01",
+                    "end": "2020-09-22"
+                },
+                "organization": {
+                    "reference": "Organization/FDC49",
+                    "identifier": {
+                        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                        "value": "FDC49"
+                    }
+                },
+                "participatingOrganization": {
+                    "reference": "Organization/QWO",
+                    "identifier": {
+                        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                        "value": "QWO"
+                    }
+                },
+                "code": [
+                    {
+                        "coding": [
+                            {
+                                "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSRelationship",
+                                "code": "RE5",
+                                "display": "IS LOCATED IN THE GEOGRAPHY OF"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "search": {
+                "mode": "match"
+            }
+        },
+        {
+            "fullUrl": "https://jenkins.ods.dc4h.link/fhir/OrganizationAffiliation/716945",
+            "resource": {
+                "resourceType": "OrganizationAffiliation",
+                "id": "716945",
+                "meta": {
+                    "versionId": "3",
+                    "lastUpdated": "2024-01-23T17:23:48.733+00:00",
+                    "source": "#8e8ca746678177d7",
+                    "profile": [
+                        "https://fhir.hl7.org.uk/StructureDefinition/UKCore-OrganizationAffiliation",
+                        "https://fhir.nhs.uk/England/StructureDefinition/England-OrganizationAffiliation-ODS"
+                    ]
+                },
+                "extension": [
+                    {
+                        "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod",
+                        "extension": [
+                            {
+                                "url": "dateType",
+                                "valueCoding": {
+                                    "system": "https://fhir.nhs.uk/England/CodeSystem/England-PeriodType",
+                                    "code": "Legal",
+                                    "display": "Legal"
+                                }
+                            },
+                            {
+                                "url": "period",
+                                "valuePeriod": {
+                                    "start": "2020-09-23"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod",
+                        "extension": [
+                            {
+                                "url": "dateType",
+                                "valueCoding": {
+                                    "system": "https://fhir.nhs.uk/England/CodeSystem/England-PeriodType",
+                                    "code": "Operational",
+                                    "display": "Operational"
+                                }
+                            },
+                            {
+                                "url": "period",
+                                "valuePeriod": {
+                                    "start": "2020-09-23"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "identifier": [
+                    {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/organization-relationship-instance",
+                        "value": "716945"
+                    }
+                ],
+                "active": true,
+                "period": {
+                    "start": "2020-09-23"
+                },
+                "organization": {
+                    "reference": "Organization/FDC49",
+                    "identifier": {
+                        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                        "value": "FDC49"
+                    }
+                },
+                "participatingOrganization": {
+                    "reference": "Organization/QF7",
+                    "identifier": {
+                        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                        "value": "QF7"
+                    }
+                },
+                "code": [
+                    {
+                        "coding": [
+                            {
+                                "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSRelationship",
+                                "code": "RE5",
+                                "display": "IS LOCATED IN THE GEOGRAPHY OF"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "search": {
+                "mode": "match"
+            }
+        }
+    ]
+}
         '4XX':
           description: |
                 An error occurred as follows:
@@ -578,120 +1560,710 @@ paths:
       operationId: get-single-organization
       description: |
         ## Overview
-        Use this endpoint to return a single organisation for the specified ID (ODS code).
+        Use this endpoint to get details for a single organisation based on its ODS code. Site codes which are supported for certain organisations can also be accessed here, there is not a separate endpoint for sites. A FHIR Organization resource will be provided when a valid id has been provided. 
         
       parameters:
         - in: path
           name: id
           description: |
-            The organisation's ID - also known as its ODS code.
+            The organisation's ODS code.
           required: true
           schema:
             type: string
-            example: 'RTG'                            
+            example: 'RR8'                            
       responses:
         '200':
-          description: Valid request that returns organisation history found that match the search criteria (which may be 0).
+          description: Valid request that returns a FHIR Organisation resource 
           content:
             application/fhir+json:
               example:
                 {
-                  "resourceType": "Organization",
-                  "id": "RR8",
-                  "meta": {
-                      "lastUpdated": "2018-01-31T00:00:00+00:00",
-                      "profile": "https://fhir.nhs.uk/STU3/StructureDefinition/ODSAPI-Organization-1"
-                  },
-                  "extension": [
-                      {
-                          "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-ActivePeriod-1",
-                          "valuePeriod": {
-                              "extension": [
-                                  {
-                                      "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-DateType-1",
-                                      "valueString": "Operational"
-                                  }
-                              ],
-                              "start": "1998-04-01"
-                          }
-                      },
-                      {
-                          "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-OrganizationRole-1",
-                          "extension": [
-                              {
-                                  "url": "role",
-                                  "valueCoding": {
-                                      "system": "https://directory.spineservices.nhs.uk/STU3/CodeSystem/ODSAPI-OrganizationRole-1",
-                                      "code": "197",
-                                      "display": "NHS TRUST"
-                                  }
-                              },
-                              {
-                                  "url": "primaryRole",
-                                  "valueBoolean": true
-                              },
-                              {
-                                  "url": "activePeriod",
-                                  "valuePeriod": {
-                                      "extension": [
-                                          {
-                                              "url": "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-DateType-1",
-                                              "valueString": "Operational"
-                                          }
-                                      ],
-                                      "start": "1998-04-01"
-                                  }
-                              },
-                              {
-                                  "url": "status",
-                                  "valueString": "Active"
-                              }
-                          ]
-                      }
-                  ],
-                  "identifier": {
-                      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                      "value": "RR8"
-                  },
-                  "active": true,
-                  "type": {
-                      "coding": {
-                          "system": "https://fhir.nhs.uk/STU3/CodeSystem/ODSAPI-OrganizationRecordClass-1",
-                          "code": "1",
-                          "display": "HSCOrg"
-                      }
-                  },
-                  "name": "LEEDS TEACHING HOSPITALS NHS TRUST",
-                  "telecom": [
-                      {
-                          "system": "fax",
-                          "value": "0113 242 6496"
-                      },
-                      {
-                          "system": "phone",
-                          "value": "0113 243 3144"
-                      }
-                  ],
-                  "address": {
-                      "line": [
-                          "ST. JAMES'S UNIVERSITY HOSPITAL",
-                          "BECKETT STREET"
-                      ],
-                      "city": "LEEDS",
-                      "district": "WEST YORKSHIRE",
-                      "postalCode": "LS9 7TF",
-                      "country": "ENGLAND"
-                  }
-              }
-              
-        '4XX':
-          description: |
-            An error occurred as follows:
-            
-            | HTTP Code   | issue.severity  | issue.code    | issue.details.code        | issue.details.display |
-            |------------ |---------------- |-----------    |-------------------------- |---------------------- |
-            | 404         | error           | not-found     | NO_RECORD_FOUND           | No record found |
+    "resourceType": "Organization",
+    "id": "RR8",
+    "meta": {
+        "versionId": "4",
+        "lastUpdated": "2024-01-23T13:37:16.122+00:00",
+        "source": "#42f81a2818154581",
+        "profile": [
+            "https://fhir.nhs.uk/England/StructureDefinition/England-Organization-ODS",
+            "https://fhir.hl7.org.uk/StructureDefinition/UKCore-Organization"
+        ]
+    },
+    "extension": [
+        {
+            "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-OrganisationRole",
+            "extension": [
+                {
+                    "url": "instanceID",
+                    "valueInteger": 37525
+                },
+                {
+                    "url": "roleCode",
+                    "valueCodeableConcept": {
+                        "coding": [
+                            {
+                                "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole",
+                                "code": "RO197",
+                                "display": "NHS TRUST"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod",
+                    "extension": [
+                        {
+                            "url": "dateType",
+                            "valueCoding": {
+                                "system": "https://fhir.nhs.uk/England/CodeSystem/England-PeriodType",
+                                "code": "Legal",
+                                "display": "Legal"
+                            }
+                        },
+                        {
+                            "url": "period",
+                            "valuePeriod": {
+                                "start": "1998-04-01"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod",
+                    "extension": [
+                        {
+                            "url": "dateType",
+                            "valueCoding": {
+                                "system": "https://fhir.nhs.uk/England/CodeSystem/England-PeriodType",
+                                "code": "Operational",
+                                "display": "Operational"
+                            }
+                        },
+                        {
+                            "url": "period",
+                            "valuePeriod": {
+                                "start": "1998-04-01"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "url": "active",
+                    "valueBoolean": true
+                }
+            ]
+        },
+        {
+            "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedDateTime",
+            "extension": [
+                {
+                    "url": "type",
+                    "valueCoding": {
+                        "system": "https://fhir.nhs.uk/England/CodeSystem/England-ODSDateTime",
+                        "code": "LastChangeDate",
+                        "display": "Last Change Date"
+                    }
+                },
+                {
+                    "url": "dateTime",
+                    "valueDateTime": "2023-11-14"
+                }
+            ]
+        }
+    ],
+    "identifier": [
+        {
+            "use": "official",
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RR8",
+            "assigner": {
+                "display": "HSCIC"
+            }
+        }
+    ],
+    "active": true,
+    "type": [
+        {
+            "coding": [
+                {
+                    "system": "https://fhir.nhs.uk/England/CodeSystem/England-ODSRecordUseType",
+                    "code": "Full",
+                    "display": "Full"
+                }
+            ]
+        },
+        {
+            "coding": [
+                {
+                    "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSRecordClass",
+                    "code": "RC1",
+                    "display": "HSCOrg"
+                }
+            ]
+        }
+    ],
+    "name": "LEEDS TEACHING HOSPITALS NHS TRUST",
+    "telecom": [
+        {
+            "system": "phone",
+            "value": "0113 243 3144"
+        },
+        {
+            "system": "url",
+            "value": "HTTPS://WWW.LEEDSTH.NHS.UK/"
+        }
+    ],
+    "address": [
+        {
+            "extension": [
+                {
+                    "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-AddressKey",
+                    "extension": [
+                        {
+                            "url": "type",
+                            "valueCodeableConcept": {
+                                "coding": [
+                                    {
+                                        "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-AddressKeyType",
+                                        "code": "UPRN",
+                                        "display": "Unique Property Reference Number"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "url": "value",
+                            "valueString": "72016246"
+                        }
+                    ]
+                }
+            ],
+            "line": [
+                "ST. JAMES'S UNIVERSITY HOSPITAL",
+                "BECKETT STREET"
+            ],
+            "city": "LEEDS",
+            "postalCode": "LS9 7TF",
+            "country": "ENGLAND"
+        }
+    ]
+}
 
+            application/xml:
+              example: |
+                <Organization xmlns="http://hl7.org/fhir">
+                    <id value="RR8"/>
+                    <meta>
+                        <versionId value="4"/>
+                        <lastUpdated value="2024-01-23T13:37:16.122+00:00"/>
+                        <source value="#42f81a2818154581"/>
+                        <profile value="https://fhir.nhs.uk/England/StructureDefinition/England-Organization-ODS"/>
+                        <profile value="https://fhir.hl7.org.uk/StructureDefinition/UKCore-Organization"/>
+                    </meta>
+                    <extension url="https://fhir.nhs.uk/England/StructureDefinition/Extension-England-OrganisationRole">
+                        <extension url="instanceID">
+                            <valueInteger value="37525"/>
+                        </extension>
+                        <extension url="roleCode">
+                            <valueCodeableConcept>
+                                <coding>
+                                    <system value="https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole"/>
+                                    <code value="RO197"/>
+                                    <display value="NHS TRUST"/>
+                                </coding>
+                            </valueCodeableConcept>
+                        </extension>
+                        <extension url="https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod">
+                            <extension url="dateType">
+                                <valueCoding>
+                                    <system value="https://fhir.nhs.uk/England/CodeSystem/England-PeriodType"/>
+                                    <code value="Legal"/>
+                                    <display value="Legal"/>
+                                </valueCoding>
+                            </extension>
+                            <extension url="period">
+                                <valuePeriod>
+                                    <start value="1998-04-01"/>
+                                </valuePeriod>
+                            </extension>
+                        </extension>
+                        <extension url="https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod">
+                            <extension url="dateType">
+                                <valueCoding>
+                                    <system value="https://fhir.nhs.uk/England/CodeSystem/England-PeriodType"/>
+                                    <code value="Operational"/>
+                                    <display value="Operational"/>
+                                </valueCoding>
+                            </extension>
+                            <extension url="period">
+                                <valuePeriod>
+                                    <start value="1998-04-01"/>
+                                </valuePeriod>
+                            </extension>
+                        </extension>
+                        <extension url="active">
+                            <valueBoolean value="true"/>
+                        </extension>
+                    </extension>
+                    <extension url="https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedDateTime">
+                        <extension url="type">
+                            <valueCoding>
+                                <system value="https://fhir.nhs.uk/England/CodeSystem/England-ODSDateTime"/>
+                                <code value="LastChangeDate"/>
+                                <display value="Last Change Date"/>
+                            </valueCoding>
+                        </extension>
+                        <extension url="dateTime">
+                            <valueDateTime value="2023-11-14"/>
+                        </extension>
+                    </extension>
+                    <identifier>
+                        <use value="official"/>
+                        <system value="https://fhir.nhs.uk/Id/ods-organization-code"/>
+                        <value value="RR8"/>
+                        <assigner>
+                            <display value="HSCIC"/>
+                        </assigner>
+                    </identifier>
+                    <active value="true"/>
+                    <type>
+                        <coding>
+                            <system value="https://fhir.nhs.uk/England/CodeSystem/England-ODSRecordUseType"/>
+                            <code value="Full"/>
+                            <display value="Full"/>
+                        </coding>
+                    </type>
+                    <type>
+                        <coding>
+                            <system value="https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSRecordClass"/>
+                            <code value="RC1"/>
+                            <display value="HSCOrg"/>
+                        </coding>
+                    </type>
+                    <name value="LEEDS TEACHING HOSPITALS NHS TRUST"/>
+                    <telecom>
+                        <system value="phone"/>
+                        <value value="0113 243 3144"/>
+                    </telecom>
+                    <telecom>
+                        <system value="url"/>
+                        <value value="HTTPS://WWW.LEEDSTH.NHS.UK/"/>
+                    </telecom>
+                    <address>
+                        <extension url="https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-AddressKey">
+                            <extension url="type">
+                                <valueCodeableConcept>
+                                    <coding>
+                                        <system value="https://fhir.hl7.org.uk/CodeSystem/UKCore-AddressKeyType"/>
+                                        <code value="UPRN"/>
+                                        <display value="Unique Property Reference Number"/>
+                                    </coding>
+                                </valueCodeableConcept>
+                            </extension>
+                            <extension url="value">
+                                <valueString value="72016246"/>
+                            </extension>
+                        </extension>
+                        <line value="ST. JAMES'S UNIVERSITY HOSPITAL"/>
+                        <line value="BECKETT STREET"/>
+                        <city value="LEEDS"/>
+                        <postalCode value="LS9 7TF"/>
+                        <country value="ENGLAND"/>
+                    </address>
+                </Organization>
+              
+        '404':
+          description: |
+            Invalid ODS Code provided, will return a 404 Not Found error
+          content:
+            application/fhir+json:
+              example:
+                {
+    "resourceType": "OperationOutcome",
+    "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><h1>Operation Outcome</h1><table border=\"0\"><tr><td style=\"font-weight: bold;\">ERROR</td><td>[]</td><td>HAPI-2001: Resource Organization/8J632648493 is not known</td></tr></table></div>"
+    },
+    "issue": [
+        {
+            "severity": "error",
+            "code": "processing",
+            "diagnostics": "HAPI-2001: Resource Organization/8J632648493 is not known"
+        }
+    ]
+}
+
+  /OrganizationAffiliation/{id}:
+    get:
+      summary: Get relationship details
+      
+      operationId: get-single-organizationaffiliation
+      description: |
+        ## Overview
+        Use this endpoint to a retrieve a single relationship record based on its unique identifier. This record describes a relationship between a pair of organisations. The types of relationships which an organisation may have will vary depending on the primary role of the organisation. In some case there may be multiple relationships between the same two organisations, each having a different relationship type. 
+
+        A FHIR OrganizationAffiliation Resource will be returned when a valid id is provided. 
+        
+      parameters:
+        - in: path
+          name: id
+          description: |
+            The relationship ID.
+          required: true
+          schema:
+            type: string
+            example: '617400'                            
+      responses:
+        '200':
+          description: Valid request that returns a FHIR OrganisationAffiliation resource 
+          content:
+            application/fhir+json:
+              example:
+                {
+    "resourceType": "OrganizationAffiliation",
+    "id": "617400",
+    "meta": {
+        "versionId": "3",
+        "lastUpdated": "2024-01-23T16:51:55.472+00:00",
+        "source": "#25caee48b2ce3432",
+        "profile": [
+            "https://fhir.hl7.org.uk/StructureDefinition/UKCore-OrganizationAffiliation",
+            "https://fhir.nhs.uk/England/StructureDefinition/England-OrganizationAffiliation-ODS"
+        ]
+    },
+    "extension": [
+        {
+            "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod",
+            "extension": [
+                {
+                    "url": "dateType",
+                    "valueCoding": {
+                        "system": "https://fhir.nhs.uk/England/CodeSystem/England-PeriodType",
+                        "code": "Legal",
+                        "display": "Legal"
+                    }
+                },
+                {
+                    "url": "period",
+                    "valuePeriod": {
+                        "start": "2019-10-01"
+                    }
+                }
+            ]
+        },
+        {
+            "url": "https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod",
+            "extension": [
+                {
+                    "url": "dateType",
+                    "valueCoding": {
+                        "system": "https://fhir.nhs.uk/England/CodeSystem/England-PeriodType",
+                        "code": "Operational",
+                        "display": "Operational"
+                    }
+                },
+                {
+                    "url": "period",
+                    "valuePeriod": {
+                        "start": "2019-10-01"
+                    }
+                }
+            ]
+        }
+    ],
+    "identifier": [
+        {
+            "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/organization-relationship-instance",
+            "value": "617400"
+        }
+    ],
+    "active": true,
+    "period": {
+        "start": "2019-10-01"
+    },
+    "organization": {
+        "reference": "Organization/G81086",
+        "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "G81086"
+        }
+    },
+    "participatingOrganization": {
+        "reference": "Organization/U36842",
+        "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "U36842"
+        }
+    },
+    "code": [
+        {
+            "coding": [
+                {
+                    "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSRelationship",
+                    "code": "RE8",
+                    "display": "IS PARTNER TO"
+                }
+            ]
+        }
+    ]
+}
+
+            application/xml:
+              example: |
+                <OrganizationAffiliation xmlns="http://hl7.org/fhir">
+                  <id value="617400"/>
+                  <meta>
+                      <versionId value="3"/>
+                      <lastUpdated value="2024-01-23T16:51:55.472+00:00"/>
+                      <source value="#25caee48b2ce3432"/>
+                      <profile value="https://fhir.hl7.org.uk/StructureDefinition/UKCore-OrganizationAffiliation"/>
+                      <profile value="https://fhir.nhs.uk/England/StructureDefinition/England-OrganizationAffiliation-ODS"/>
+                  </meta>
+                  <extension url="https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod">
+                      <extension url="dateType">
+                          <valueCoding>
+                              <system value="https://fhir.nhs.uk/England/CodeSystem/England-PeriodType"/>
+                              <code value="Legal"/>
+                              <display value="Legal"/>
+                          </valueCoding>
+                      </extension>
+                      <extension url="period">
+                          <valuePeriod>
+                              <start value="2019-10-01"/>
+                          </valuePeriod>
+                      </extension>
+                  </extension>
+                  <extension url="https://fhir.nhs.uk/England/StructureDefinition/Extension-England-TypedPeriod">
+                      <extension url="dateType">
+                          <valueCoding>
+                              <system value="https://fhir.nhs.uk/England/CodeSystem/England-PeriodType"/>
+                              <code value="Operational"/>
+                              <display value="Operational"/>
+                          </valueCoding>
+                      </extension>
+                      <extension url="period">
+                          <valuePeriod>
+                              <start value="2019-10-01"/>
+                          </valuePeriod>
+                      </extension>
+                  </extension>
+                  <identifier>
+                      <system value="https://digital.nhs.uk/services/organisation-data-service/CodeSystem/organization-relationship-instance"/>
+                      <value value="617400"/>
+                  </identifier>
+                  <active value="true"/>
+                  <period>
+                      <start value="2019-10-01"/>
+                  </period>
+                  <organization>
+                      <reference value="Organization/G81086"/>
+                      <identifier>
+                          <system value="https://fhir.nhs.uk/Id/ods-organization-code"/>
+                          <value value="G81086"/>
+                      </identifier>
+                  </organization>
+                  <participatingOrganization>
+                      <reference value="Organization/U36842"/>
+                      <identifier>
+                          <system value="https://fhir.nhs.uk/Id/ods-organization-code"/>
+                          <value value="U36842"/>
+                      </identifier>
+                  </participatingOrganization>
+                  <code>
+                      <coding>
+                          <system value="https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSRelationship"/>
+                          <code value="RE8"/>
+                          <display value="IS PARTNER TO"/>
+                      </coding>
+                  </code>
+                </OrganizationAffiliation>              
+        '404':
+          description: |
+            Invalid ODS Code provided, will return a 404 Not Found error
+          content:
+            application/fhir+json:
+              example:
+                {
+    "resourceType": "OperationOutcome",
+    "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><h1>Operation Outcome</h1><table border=\"0\"><tr><td style=\"font-weight: bold;\">ERROR</td><td>[]</td><td>HAPI-2001: Resource Organization/8J632648493 is not known</td></tr></table></div>"
+    },
+    "issue": [
+        {
+            "severity": "error",
+            "code": "processing",
+            "diagnostics": "HAPI-2001: Resource Organization/8J632648493 is not known"
+        }
+    ]
+}
+
+  /List{id}:
+    get:
+      summary: Get deletion notices
+      
+      operationId: get-deletion-notices
+      description: |
+        ## Overview
+        
+        Use this endpoint to check for any full record or partial record deletions. As these occur infrequently a full List of deletions will be provided. 
+        There are four Lists which provide details of deletions that have occured within the ODS Data
+          * Organization-deletion
+          * OrganizationAffiliation-deletion
+          * Organization-role-deletion
+          * Organization-succession-deletion
+          
+          ## Organization-deletion
+          From time to time it is posible that we create or receive orgnisations which are created in error and removed from the source data. when this occurs there is no updates to the record, it is simply no longer available. to inform users when Organisations have been deleted, we have used the List resource to provide the ODS Code of the records which have been deleted so that you may removed them from any local copies you may be maintaining.
+          
+          ## OrganizationAffilliation-deletion
+          in the unlikely event that a relationship must be deleted rather then given an end date, the RelationshipID will be provided in this List resource. 
+            
+          ## Organization-role-deletion
+          In the unlikely event that a role is deleted, rather than given an end date, the roleID will be provided in this list resource. As the role forms part of the Organization Resource you may not need to take action other than to verify the role was intentionally removed.
+          
+          ## Organization-succession-deletion
+          In the unlikely event that the succession is removed from an organisation, the Organisation's ODS Code and that of it's successor will be published in this list resource. As the successor and predecessor are properties of the ods-organization-code CodeSystem, you may not need to take action if you are maintaining a local copy of the CodeSystem other than to verify the succession was intentionally removed.  
+
+      parameters:
+        - in: path
+          name: id
+          description: |
+            the business name for the List which contains details of deleted records
+          required: true
+          schema:
+            type: string
+            example: 'Organization-deletion'      
+      responses:
+        '200':
+          description:  a valid List resource containing details of deleted records
+          content:
+            application/fhir+json:
+              example:
+                {
+    "resourceType": "List",
+    "id": "Organization-deletion",
+    "meta": {
+        "versionId": "3",
+        "lastUpdated": "2024-03-06T08:33:55.775+00:00",
+        "source": "#3c8d0fc7e6526ce0"
+    },
+    "status": "current",
+    "mode": "working",
+    "title": "List of Organization Resource Deletions",
+    "date": "2024-01-25T00:00:00+00:00",
+    "note": [
+        {
+            "text": "A list of complete Organisation records which have been deleted from the ODS Dataset"
+        }
+    ],
+    "entry": [
+        {
+            "date": "2024-01-17T00:00:00+00:00",
+            "item": {
+                "type": "Organization",
+                "identifier": {
+                    "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                    "value": "FVG57"
+                }
+            }
+        },
+        {
+            "date": "2024-01-17T00:00:00+00:00",
+            "item": {
+                "type": "Organization",
+                "identifier": {
+                    "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                    "value": "FJE57"
+                }
+            }
+        }
+    ]
+}
+            application/xml:
+              example:
+                <List xmlns="http://hl7.org/fhir">
+                  <id value="Organization-deletion"/>
+                  <meta>
+                      <versionId value="3"/>
+                      <lastUpdated value="2024-03-06T08:33:55.775+00:00"/>
+                      <source value="#3c8d0fc7e6526ce0"/>
+                  </meta>
+                  <status value="current"/>
+                  <mode value="working"/>
+                  <title value="List of Organization Resource Deletions"/>
+                  <date value="2024-01-25T00:00:00+00:00"/>
+                  <note>
+                      <text value="A list of complete Organisation records which have been deleted from the ODS Dataset"/>
+                  </note>
+                  <entry>
+                      <date value="2024-01-17T00:00:00+00:00"/>
+                      <item>
+                          <type value="Organization"/>
+                          <identifier>
+                              <system value="https://fhir.nhs.uk/Id/ods-organization-code"/>
+                              <value value="FVG57"/>
+                          </identifier>
+                      </item>
+                  </entry>
+                  <entry>
+                      <date value="2024-01-17T00:00:00+00:00"/>
+                      <item>
+                          <type value="Organization"/>
+                          <identifier>
+                              <system value="https://fhir.nhs.uk/Id/ods-organization-code"/>
+                              <value value="FJE57"/>
+                          </identifier>
+                      </item>
+                  </entry>
+                </List>
+                
+  /CodeSystem:
+    get:
+      summary: Get Practitioner Details
+      
+      operationId: get-single-practitioner
+      description: |
+        ## Overview 
+
+        Use this endpoint to access a single practitioner record from the practitioner CodeSystem. Practitioner CodeSystem requires elevated permissions. 
+      
+      parameters:
+        - in: query
+          name: system
+          description: |
+            The Unique Resource Indicator (URI) of the codesystem
+          required: false
+          schema:
+            type: string
+            example: 'https://digital.nhs.uk/services/organisation-data-service/CodeSystem/practitioner'      
+        - in: query
+          name: id
+          description: |
+            The practitioner's ID 
+          required: false
+          schema:
+            type: string
+            example: 'G7112418'
+        - in: query
+          name: property
+          description: |
+            Include all or specific properties from a CodeSystem. 
+
+            To return all use asterisk ‘*’ 
+
+            To return multiple properties, include each one as a separate parameter 
+          required: false
+          schema:
+            type: string
+            example: ''
+      
+      responses:
+        '200':
+          description: a valid request that returns the practitioner record
+      
+      
+  
   /metadata:
     get:
       summary: Get capability statement
@@ -700,6 +2272,8 @@ paths:
       description: |
         ## Overview
         Use this endpoint to get a Capability Statement. A Capability Statement is a set of capabilities of a FHIR Server that may be used as a statement of actual server functionality or a statement of required or desired server implementation.
+        
+        [Needs updating]
         
       responses:
         '200':
@@ -971,838 +2545,6 @@ paths:
                         </include>
                     </compose>
                 </ValueSet>
-              
-        '4XX':
-          description: |
-            An error occurred as follows:
-            
-            | HTTP Code   | issue.severity  | issue.code    | issue.details.code        | issue.details.display |
-            |------------ |---------------- |-----------    |-------------------------- |---------------------- |
-            | 404         | error           | not-found     | NO_RECORD_FOUND           | No record found |
-                   
-  /CodeSystem/{id}:
-    get:
-      summary: Get code system
-      
-      operationId: get-codesystem-id
-      description: |
-        ## Overview
-        Use this endpoint to get a single Code System for a specified ID.
-      
-      parameters:
-        - in: path
-          name: id
-          description: |
-            The ID for a Code System
-          required: true
-          schema:
-            type: string
-            example: 'ODSAPI-OrganizationRole-1'          
-      responses:
-        '200':
-          description: OK result with CodeSystem
-          content:
-            application/fhir+json:
-              example: 
-                {
-                    "resourceType": "CodeSystem",
-                    "url": "https://uat.directory.spineservices.nhs.uk/STU3/CodeSystem/ODSAPI-OrganizationRole-1",
-                    "version": "1.32.0",
-                    "name": "ODS API Organization Role",
-                    "status": "active",
-                    "date": "2023-03-10",
-                    "publisher": "NHS Digital",
-                    "contact": [
-                        {
-                            "name": "National Helpdesk Exeter",
-                            "telecom": [
-                                {
-                                    "system": "email",
-                                    "value": "exeter.helpdesk@nhs.net",
-                                    "use": "work"
-                                },
-                                {
-                                    "system": "phone",
-                                    "value": "0300 303 4034",
-                                    "use": "work"
-                                }
-                            ]
-                        }
-                    ],
-                    "description": "A CodeSystem that identifies the role(s) of the organization.",
-                    "copyright": "Copyright © 2017 Health and Social Care Information Centre. NHS Digital is the trading name of the Health and Social Care Information Centre.",
-                    "content": "complete",
-                    "concept": [
-                        {
-                            "code": "180",
-                            "display": "PRIMARY CARE TRUST SITE"
-                        },
-                        {
-                            "code": "114",
-                            "display": "DMU SITE"
-                        },
-                        {
-                            "code": "132",
-                            "display": "HEALTH AUTHORITY (HA)"
-                        },
-                        {
-                            "code": "15",
-                            "display": "REG'D UNDER PART 2 CARE STDS ACT 2000"
-                        },
-                        {
-                            "code": "7",
-                            "display": "HOSPICE"
-                        },
-                        {
-                            "code": "189",
-                            "display": "SPECIAL HEALTH AUTHORITY (SPHA)"
-                        },
-                        {
-                            "code": "191",
-                            "display": "SPECIAL HEALTH AUTHORITY SITE"
-                        },
-                        {
-                            "code": "31",
-                            "display": "PPA EPACT SYSTEM"
-                        },
-                        {
-                            "code": "29",
-                            "display": "TREATMENT CENTRE"
-                        },
-                        {
-                            "code": "268",
-                            "display": "MEDICINE SUPPLIER"
-                        },
-                        {
-                            "code": "142",
-                            "display": "LOCAL HEALTH BOARD"
-                        },
-                        {
-                            "code": "144",
-                            "display": "WELSH LOCAL HEALTH BOARD"
-                        },
-                        {
-                            "code": "108",
-                            "display": "CARE TRUST SITE"
-                        },
-                        {
-                            "code": "119",
-                            "display": "LOCAL AUTHORITY - LEGACY"
-                        },
-                        {
-                            "code": "122",
-                            "display": "LOCAL AUTHORITY SITE - LEGACY"
-                        },
-                        {
-                            "code": "175",
-                            "display": "PRISON"
-                        },
-                        {
-                            "code": "126",
-                            "display": "GOVERNMENT DEPARTMENT"
-                        },
-                        {
-                            "code": "24",
-                            "display": "NHS TRUST DERIVED"
-                        },
-                        {
-                            "code": "57",
-                            "display": "FOUNDATION TRUST"
-                        },
-                        {
-                            "code": "173",
-                            "display": "PATHOLOGY LAB"
-                        },
-                        {
-                            "code": "22",
-                            "display": "LEVEL 04 PCT"
-                        },
-                        {
-                            "code": "109",
-                            "display": "DISTRICT HEALTH AUTHORITY (DHA)"
-                        },
-                        {
-                            "code": "111",
-                            "display": "DIRECTLY MANAGED UNIT (DMU)"
-                        },
-                        {
-                            "code": "123",
-                            "display": "LOCAL AUTHORITY DEPARTMENT"
-                        },
-                        {
-                            "code": "185",
-                            "display": "REGIONAL OFFICE (RO)"
-                        },
-                        {
-                            "code": "222",
-                            "display": "LOCAL AUTHORITY SITE"
-                        },
-                        {
-                            "code": "40",
-                            "display": "UNITARY AUTHORITY"
-                        },
-                        {
-                            "code": "33",
-                            "display": "COUNTY COUNCIL"
-                        },
-                        {
-                            "code": "91",
-                            "display": "EXECUTIVE AGENCY PROGRAMME"
-                        },
-                        {
-                            "code": "209",
-                            "display": "NHS ENGLAND (REGION)"
-                        },
-                        {
-                            "code": "146",
-                            "display": "LOCAL SERVICE PROVIDER (LSP)"
-                        },
-                        {
-                            "code": "137",
-                            "display": "ISLE OF MAN GOVERNMENT DIRECTORATE"
-                        },
-                        {
-                            "code": "140",
-                            "display": "ISLE OF MAN GOVERNMENT DIRECTORATE SITE"
-                        },
-                        {
-                            "code": "161",
-                            "display": "NHS SUPPORT AGENCY"
-                        },
-                        {
-                            "code": "200",
-                            "display": "WELSH ASSEMBLY"
-                        },
-                        {
-                            "code": "90",
-                            "display": "EXECUTIVE AGENCY SITE"
-                        },
-                        {
-                            "code": "148",
-                            "display": "LOCAL HEALTH BOARD SITE"
-                        },
-                        {
-                            "code": "249",
-                            "display": "HOSPICE PRESCRIBING COST CENTRE"
-                        },
-                        {
-                            "code": "80",
-                            "display": "OUT OF HOURS COST CENTRE"
-                        },
-                        {
-                            "code": "87",
-                            "display": "WALK IN CENTRE"
-                        },
-                        {
-                            "code": "259",
-                            "display": "URGENT & EMERGENCY CARE PRESCRIBING COST CENTRE"
-                        },
-                        {
-                            "code": "138",
-                            "display": "ISLE OF MAN GOVERNMENT DEPARTMENT"
-                        },
-                        {
-                            "code": "105",
-                            "display": "CANCER REGISTRY"
-                        },
-                        {
-                            "code": "246",
-                            "display": "CARE HOME/NURSING HOME PRESCRIBING COST CENTRE"
-                        },
-                        {
-                            "code": "169",
-                            "display": "OTHER UNIT (IN SUPPORT OF NHS BUSINESS)"
-                        },
-                        {
-                            "code": "92",
-                            "display": "APPLICATION SERVICE PROVIDER"
-                        },
-                        {
-                            "code": "21",
-                            "display": "LEVEL 03 PCT"
-                        },
-                        {
-                            "code": "106",
-                            "display": "COMMON SERVICE AGENCY (CSA)"
-                        },
-                        {
-                            "code": "25",
-                            "display": "PCT DERIVED"
-                        },
-                        {
-                            "code": "150",
-                            "display": "MILITARY HOSPITAL"
-                        },
-                        {
-                            "code": "65",
-                            "display": "PRIVATE DENTAL PRACTICE"
-                        },
-                        {
-                            "code": "149",
-                            "display": "WELSH LOCAL HEALTH BOARD SITE"
-                        },
-                        {
-                            "code": "11",
-                            "display": "LA - METROPOLITAN DISTRICT"
-                        },
-                        {
-                            "code": "37",
-                            "display": "METROPOLITAN DISTRICT"
-                        },
-                        {
-                            "code": "12",
-                            "display": "LA - INNER LONDON"
-                        },
-                        {
-                            "code": "223",
-                            "display": "LONDON BOROUGH"
-                        },
-                        {
-                            "code": "67",
-                            "display": "SPECIALISED COMMISSIONING GROUP"
-                        },
-                        {
-                            "code": "30",
-                            "display": "RESEARCH AND DEVELOPMENT"
-                        },
-                        {
-                            "code": "128",
-                            "display": "GOVERNMENT OFFICE REGION"
-                        },
-                        {
-                            "code": "252",
-                            "display": "OPTOMETRY SERVICE PRESCRIBING COST CENTRE"
-                        },
-                        {
-                            "code": "82",
-                            "display": "PRISON PRESCRIBING COST CENTRE"
-                        },
-                        {
-                            "code": "162",
-                            "display": "OTHER STATUTORY AUTHORITY (OSA)"
-                        },
-                        {
-                            "code": "93",
-                            "display": "APPLICATION SERVICE PROVIDER - LEGACY"
-                        },
-                        {
-                            "code": "116",
-                            "display": "EXECUTIVE AGENCY"
-                        },
-                        {
-                            "code": "117",
-                            "display": "EDUCATION"
-                        },
-                        {
-                            "code": "36",
-                            "display": "DISTRICT COUNCIL"
-                        },
-                        {
-                            "code": "39",
-                            "display": "METROPOLITAN DISTRICT COUNCIL"
-                        },
-                        {
-                            "code": "71",
-                            "display": "PRIVATELY OWNED ENTITY"
-                        },
-                        {
-                            "code": "34",
-                            "display": "BOROUGH COUNCIL"
-                        },
-                        {
-                            "code": "316",
-                            "display": "SPECIAL SCHOOLS EYE CARE SERVICE PROVIDER"
-                        },
-                        {
-                            "code": "134",
-                            "display": "HEALTH OBSERVATORY"
-                        },
-                        {
-                            "code": "35",
-                            "display": "CITY COUNCIL"
-                        },
-                        {
-                            "code": "131",
-                            "display": "GOVERNMENT DEPARTMENT SITE"
-                        },
-                        {
-                            "code": "158",
-                            "display": "NON STATUTORY NHS ORGANISATION"
-                        },
-                        {
-                            "code": "147",
-                            "display": "LSP SITE"
-                        },
-                        {
-                            "code": "38",
-                            "display": "COUNCIL"
-                        },
-                        {
-                            "code": "154",
-                            "display": "NORTHERN IRELAND HEALTH AND SOCIAL CARE TRUST"
-                        },
-                        {
-                            "code": "159",
-                            "display": "NATIONAL APPLICATION SERVICE PROVIDER"
-                        },
-                        {
-                            "code": "89",
-                            "display": "EXECUTIVE AGENCY PROGRAMME - DEPARTMENT"
-                        },
-                        {
-                            "code": "102",
-                            "display": "CLINICAL NETWORK"
-                        },
-                        {
-                            "code": "103",
-                            "display": "CANCER NETWORK"
-                        },
-                        {
-                            "code": "266",
-                            "display": "EXTENDED ACCESS PROVIDER"
-                        },
-                        {
-                            "code": "153",
-                            "display": "NORTHERN IRELAND HEALTH & SOCIAL CARE BOARD"
-                        },
-                        {
-                            "code": "267",
-                            "display": "EXTENDED ACCESS HUB"
-                        },
-                        {
-                            "code": "168",
-                            "display": "OTHER STATUTORY AUTHORITY SITE"
-                        },
-                        {
-                            "code": "69",
-                            "display": "IMMIGRATION REMOVAL CENTRE"
-                        },
-                        {
-                            "code": "155",
-                            "display": "NORTHERN IRELAND LOCAL COMMISSIONING GROUP"
-                        },
-                        {
-                            "code": "136",
-                            "display": "STRATEGIC HEALTH AUTHORITY SITE"
-                        },
-                        {
-                            "code": "319",
-                            "display": "SUB ICB LOCATION"
-                        },
-                        {
-                            "code": "211",
-                            "display": "SPECIALISED COMMISSIONING HUB"
-                        },
-                        {
-                            "code": "218",
-                            "display": "COMMISSIONING HUB"
-                        },
-                        {
-                            "code": "213",
-                            "display": "COMMISSIONING SUPPORT UNIT"
-                        },
-                        {
-                            "code": "215",
-                            "display": "HOSTS DATA MANAGMENT INTEGRATION CENTRE (DMIC)"
-                        },
-                        {
-                            "code": "99",
-                            "display": "CLINICAL COMMISSIONING GROUP SITE"
-                        },
-                        {
-                            "code": "216",
-                            "display": "DATA SERVICES FOR COMMISSIONERS REGIONAL OFFICE (DSCRO)"
-                        },
-                        {
-                            "code": "214",
-                            "display": "COMMISSIONING SUPPORT UNIT SITE"
-                        },
-                        {
-                            "code": "212",
-                            "display": "NHS ENGLAND (REGION, LOCAL OFFICE) SITE"
-                        },
-                        {
-                            "code": "217",
-                            "display": "DSCRO SITE"
-                        },
-                        {
-                            "code": "220",
-                            "display": "SECURE TRAINING CENTRE"
-                        },
-                        {
-                            "code": "190",
-                            "display": "SCOTTISH HEALTH BOARD"
-                        },
-                        {
-                            "code": "227",
-                            "display": "SCOTTISH GP PRACTICE"
-                        },
-                        {
-                            "code": "229",
-                            "display": "NON RESIDENTIAL INSTITUTION"
-                        },
-                        {
-                            "code": "235",
-                            "display": "COURT"
-                        },
-                        {
-                            "code": "233",
-                            "display": "CONSTABULARY"
-                        },
-                        {
-                            "code": "234",
-                            "display": "POLICE CUSTODY SUITE"
-                        },
-                        {
-                            "code": "260",
-                            "display": "YOUNG OFFENDER INSTITUTION PRESCRIBING COST CENTRE"
-                        },
-                        {
-                            "code": "83",
-                            "display": "RESIDENTIAL INSTITUTION"
-                        },
-                        {
-                            "code": "228",
-                            "display": "YOUNG OFFENDER INSTITUTION"
-                        },
-                        {
-                            "code": "232",
-                            "display": "IMMIGRATION REMOVAL CENTRE"
-                        },
-                        {
-                            "code": "230",
-                            "display": "SECURE TRAINING CENTRE"
-                        },
-                        {
-                            "code": "231",
-                            "display": "SECURE CHILDREN'S HOME"
-                        },
-                        {
-                            "code": "251",
-                            "display": "IMMIGRATION REMOVAL CENTRE PRESCRIBING COST CENTRE"
-                        },
-                        {
-                            "code": "94",
-                            "display": "APPLIANCE CONTRACTOR"
-                        },
-                        {
-                            "code": "101",
-                            "display": "SOCIAL CARE SITE"
-                        },
-                        {
-                            "code": "269",
-                            "display": "CARE HOME"
-                        },
-                        {
-                            "code": "270",
-                            "display": "DOMICILIARY CARE"
-                        },
-                        {
-                            "code": "256",
-                            "display": "SECURE CHILDREN'S HOME PRESCRIBING COST CENTRE"
-                        },
-                        {
-                            "code": "257",
-                            "display": "SECURE TRAINING CENTRE PRESCRIBING COST CENTRE"
-                        },
-                        {
-                            "code": "262",
-                            "display": "SUSTAINABILITY TRANSFORMATION PARTNERSHIP"
-                        },
-                        {
-                            "code": "318",
-                            "display": "INTEGRATED CARE BOARD"
-                        },
-                        {
-                            "code": "236",
-                            "display": "SEXUAL ASSAULT REFERRAL CENTRE"
-                        },
-                        {
-                            "code": "258",
-                            "display": "SEXUAL ASSAULT REFERRAL CENTRE PRESCRIBING COST CE"
-                        },
-                        {
-                            "code": "273",
-                            "display": "COMBINED AUTHORITY"
-                        },
-                        {
-                            "code": "274",
-                            "display": "LOCAL HEALTH AND CARE RECORD EXEMPLAR"
-                        },
-                        {
-                            "code": "275",
-                            "display": "SMHPC - CYPMHS TIER 4"
-                        },
-                        {
-                            "code": "276",
-                            "display": "SMHPC - ADULT EATING DISORDERS"
-                        },
-                        {
-                            "code": "277",
-                            "display": "SMHPC - ADULT SECURE SERVICES"
-                        },
-                        {
-                            "code": "221",
-                            "display": "SCHOOL"
-                        },
-                        {
-                            "code": "286",
-                            "display": "COMMUNITY SPECIAL SCHOOL"
-                        },
-                        {
-                            "code": "281",
-                            "display": "COMMUNITY SCHOOL"
-                        },
-                        {
-                            "code": "283",
-                            "display": "VOLUNTARY CONTROLLED SCHOOL"
-                        },
-                        {
-                            "code": "282",
-                            "display": "VOLUNTARY AIDED SCHOOL"
-                        },
-                        {
-                            "code": "289",
-                            "display": "OTHER INDEPENDENT SCHOOL"
-                        },
-                        {
-                            "code": "292",
-                            "display": "LOCAL AUTHORITY NURSERY SCHOOL"
-                        },
-                        {
-                            "code": "291",
-                            "display": "PUPIL REFERRAL UNIT"
-                        },
-                        {
-                            "code": "284",
-                            "display": "FOUNDATION SCHOOL"
-                        },
-                        {
-                            "code": "290",
-                            "display": "FOUNDATION SPECIAL SCHOOL"
-                        },
-                        {
-                            "code": "288",
-                            "display": "OTHER INDEPENDENT SPECIAL SCHOOL"
-                        },
-                        {
-                            "code": "285",
-                            "display": "CITY TECHNOLOGY COLLEGE"
-                        },
-                        {
-                            "code": "287",
-                            "display": "NON-MAINTAINED SPECIAL SCHOOL"
-                        },
-                        {
-                            "code": "297",
-                            "display": "ACADEMY SPONSOR LED"
-                        },
-                        {
-                            "code": "293",
-                            "display": "FURTHER EDUCATION"
-                        },
-                        {
-                            "code": "296",
-                            "display": "MISCELLANEOUS"
-                        },
-                        {
-                            "code": "314",
-                            "display": "INSTITUTION FUNDED BY OTHER GOVERNMENT DEPARTMENT"
-                        },
-                        {
-                            "code": "300",
-                            "display": "SPECIAL POST 16 INSTITUTION"
-                        },
-                        {
-                            "code": "299",
-                            "display": "SIXTH FORM CENTRES"
-                        },
-                        {
-                            "code": "294",
-                            "display": "SECURE UNITS"
-                        },
-                        {
-                            "code": "298",
-                            "display": "HIGHER EDUCATION INSTITUTIONS"
-                        },
-                        {
-                            "code": "302",
-                            "display": "ACADEMY CONVERTER"
-                        },
-                        {
-                            "code": "303",
-                            "display": "FREE SCHOOLS"
-                        },
-                        {
-                            "code": "309",
-                            "display": "ACADEMY ALTERNATIVE PROVISION CONVERTER"
-                        },
-                        {
-                            "code": "307",
-                            "display": "UNIVERSITY TECHNICAL COLLEGE"
-                        },
-                        {
-                            "code": "304",
-                            "display": "FREE SCHOOLS SPECIAL"
-                        },
-                        {
-                            "code": "311",
-                            "display": "ACADEMY SPECIAL CONVERTER"
-                        },
-                        {
-                            "code": "312",
-                            "display": "ACADEMY 16-19 CONVERTER"
-                        },
-                        {
-                            "code": "305",
-                            "display": "FREE SCHOOLS ALTERNATIVE PROVISION"
-                        },
-                        {
-                            "code": "306",
-                            "display": "FREE SCHOOLS 16 TO 19"
-                        },
-                        {
-                            "code": "308",
-                            "display": "STUDIO SCHOOLS"
-                        },
-                        {
-                            "code": "301",
-                            "display": "ACADEMY SPECIAL SPONSOR LED"
-                        },
-                        {
-                            "code": "310",
-                            "display": "ACADEMY ALTERNATIVE PROVISION SPONSOR LED"
-                        },
-                        {
-                            "code": "313",
-                            "display": "ACADEMY 16 TO 19 SPONSOR LED"
-                        },
-                        {
-                            "code": "317",
-                            "display": "COMMUNITY DIAGNOSTIC CENTRE"
-                        },
-                        {
-                            "code": "315",
-                            "display": "NORTHERN IRELAND GP PRACTICE"
-                        },
-                        {
-                            "code": "320",
-                            "display": "ELECTIVE SURGICAL HUB"
-                        },
-                        {
-                            "code": "179",
-                            "display": "PRIMARY CARE TRUST"
-                        },
-                        {
-                            "code": "171",
-                            "display": "PRIMARY CARE GROUP"
-                        },
-                        {
-                            "code": "98",
-                            "display": "CLINICAL COMMISSIONING GROUP"
-                        },
-                        {
-                            "code": "272",
-                            "display": "PRIMARY CARE NETWORK"
-                        },
-                        {
-                            "code": "76",
-                            "display": "GP PRACTICE"
-                        },
-                        {
-                            "code": "177",
-                            "display": "PRESCRIBING COST CENTRE"
-                        },
-                        {
-                            "code": "72",
-                            "display": "OTHER PRESCRIBING COST CENTRE"
-                        },
-                        {
-                            "code": "210",
-                            "display": "NHS ENGLAND (REGION, LOCAL OFFICE)"
-                        },
-                        {
-                            "code": "181",
-                            "display": "PHARMACY HEADQUARTER"
-                        },
-                        {
-                            "code": "261",
-                            "display": "STRATEGIC PARTNERSHIP"
-                        },
-                        {
-                            "code": "182",
-                            "display": "PHARMACY"
-                        },
-                        {
-                            "code": "157",
-                            "display": "NON-NHS ORGANISATION"
-                        },
-                        {
-                            "code": "104",
-                            "display": "SOCIAL CARE PROVIDER"
-                        },
-                        {
-                            "code": "172",
-                            "display": "INDEPENDENT SECTOR HEALTHCARE PROVIDER"
-                        },
-                        {
-                            "code": "250",
-                            "display": "HOSPITAL SERVICE PRESCRIBING COST CENTRE"
-                        },
-                        {
-                            "code": "197",
-                            "display": "NHS TRUST"
-                        },
-                        {
-                            "code": "198",
-                            "display": "NHS TRUST SITE"
-                        },
-                        {
-                            "code": "176",
-                            "display": "INDEPENDENT SECTOR H/C PROVIDER SITE"
-                        },
-                        {
-                            "code": "279",
-                            "display": "COVID VACCINATION CENTRE"
-                        },
-                        {
-                            "code": "280",
-                            "display": "PHARMACY SITE"
-                        },
-                        {
-                            "code": "96",
-                            "display": "BRANCH SURGERY"
-                        },
-                        {
-                            "code": "166",
-                            "display": "OPTICAL HEADQUARTERS"
-                        },
-                        {
-                            "code": "167",
-                            "display": "OPTICAL SITE"
-                        },
-                        {
-                            "code": "110",
-                            "display": "GENERAL DENTAL PRACTICE"
-                        },
-                        {
-                            "code": "107",
-                            "display": "CARE TRUST"
-                        },
-                        {
-                            "code": "247",
-                            "display": "COMMUNITY HEALTH SERVICE PRESCRIBING COST CENTRE"
-                        },
-                        {
-                            "code": "141",
-                            "display": "LOCAL AUTHORITY"
-                        },
-                        {
-                            "code": "255",
-                            "display": "PUBLIC HEALTH SERVICE PRESCRIBING COST CENTRE"
-                        }
-                    ]
-                }
               
         '4XX':
           description: |
