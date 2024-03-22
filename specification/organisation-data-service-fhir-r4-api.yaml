@@ -32,10 +32,12 @@ info:
 
     You can also limit the number of results returned, or just request a count of the number of search results.
 
-    For every postcode within the NHS Postcode Directory, we have compiled a CodeSystem which contains the postcode along with its key Health and Social Care boundaries, including, Primary Care Organisations, Integrated Care Boards,  Local Authority 2011 Lower Super Output Areas (LSOA11), Cancer Alliances and NHS England Regions 
-
     This FHIR API makes use of the Organization and OrganizationAffiliation FHIR resources plus range of CodeSystems to deliver the full suite of data, which you will use will depend on your need. 
     
+
+    ### Organisation Data
+    
+    We have been able to align the majority of data we hold for an organisation into the FHIR resources Organization and OrganizationAffiliation, through the limited use of extensions, however some previously available information could not be included.
     
     To access the Organistion attributes which are not included in the Organization resource use the ods-organization-code CodeSystem. The CodeSystem resource returns the following additional information:
 
@@ -44,7 +46,20 @@ info:
       - succession - any predecessors and/or successors and a flag to indicate the successor has also been succeeded 
       - geographic - the appropriate mapping from the postcode dataset including Local Authority, Integrated Care Board or Lower Super Output Area (LSOA) 
 
-    In Addition to the ods-organisation-code CodeSystem, there are also CodeSystems for:
+    ### Practitioner Data
+    ODS publishes a limited set of prescribers held by the Business Services Authority, which includes General Practitioners and Nurse Prescribers, alongside Hospital and Dental Consultants provided by the workforce census returns.
+    
+    These codes have not been made available within the Pracitioner Resource as it is felt thet they do not accurately represent an indindiual, but rather reflect their prescribing activities.
+    
+    To access the Practitioner data you will need to use the practitioner CodeSystem in conjunction with the practitioner-relationship-instance CodeSystem which contians the relationship between a practitioner and the organisation at which they work. 
+    
+    ### Postcodes and geographic boundaries available
+    
+    For every postcode within the NHS Postcode Directory, we have compiled a CodeSystem which contains the postcode along with its key Health and Social Care boundaries, including, Primary Care Organisations, Integrated Care Boards,  Local Authority 2011 Lower Super Output Areas (LSOA11), Cancer Alliances and NHS England Regions 
+
+    ### CodeSystems to support the full range of ODS Content
+  
+    In Addition to the ods-organisation-code CodeSystem mentioned above, there are also CodeSystems for:
 
     - practitioner - includes details about related organisation (where a practitioner is based/works) and type of practitioner
     - postcode - contains various geographic values/boundaries for a postcode including which Lower Super Output Area, Parliamentary Constituency, Local Authority and Integrated Care Board boundary a postcode falls within
@@ -73,9 +88,6 @@ info:
             </div>
         </div>
     </section>
-
-
- 
 
 
     ## Who can use this API
@@ -169,7 +181,9 @@ paths:
       operationId: get-organization-resources
       description: |
         ## Overview
-        Use this endpoint to search for organisations or sites. Site codes which are supported for certain organisations can also be accessed here, there is no separate endpoint for sites. A FHIR Organization resource will be provided for each search result.
+        Use this endpoint to search for organisations or sites. Site codes which are supported for certain organisations can also be accessed here, there is no separate endpoint for sites. 
+        
+        A FHIR Organization resource will be provided for each search result.
         
         You can search for information about an organisation using one or more of their: 
 
@@ -180,11 +194,25 @@ paths:
           * address, city or postcode  
           * organisation's primary role using RoleID, such as RO197 (NHS Trust) or RO167 (Optical Site) 
           * organisation's non-primary role using RoleID, such as RO7 (Hospice) or RO318 (Integrated Care Board) 
+        ### CodeSystem only  
           * related organisations using a Relationship ID such as RE4 (commissioned by) or RE6 (operated by) 
           * presence of Successor or Predecessor information 
           * geographic values such as Local Authority boundary, Integrated Care Board boundary or Lower Super Output Area (LSOA) 
+          
+        This API returns the following details for an organisation: 
 
- 
+          * organisation - ODS code, name, last change date, status if active or inactive , record class (organisation or site), record use type; A complete record or a reduced record included solely for referential integrity.
+          * address - house or flat number, line 1, line 2, line 3, town, postcode, Unique Property Reference Number (UPRN) and country
+          * contacts - website and telephone (where available)
+          * roles - primary and non-primary roles including legal and operational start and end dates 
+
+        You can also request any related relations resources using the `_revinclude` parameter to return an OrganizationAffiliation Resource. 
+        
+        You can try out the sandbox using the 'Try this API' feature on this page. (Coming Soon!)
+        
+        Alternatively, you can try out the sandbox using our Postman collection (placeholder link):
+        
+        [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/32547823-005ebee4-7510-44c3-bb0e-58f26b2ba747)
         
       parameters:
         - in: query
@@ -192,7 +220,7 @@ paths:
           description: |
             The organisation’s ODS code.  
             
-            If you already know the ODS code, use the ‘Get organisation details’ endpoint instead.
+            If you already know the ODS code, use the `Get organisation details` endpoint instead.
             
           required: false
           schema:
@@ -203,7 +231,7 @@ paths:
           description: |
             The organisation's ODS code.  
             
-            This parameter is similar to `_id` but can also explicitly include the code system for the ID - which must be `ods-organization-code`.  
+            This parameter is similar to `_id` but can also explicitly include the CodeSystem for the ID - which must be `ods-organization-code`.  
             
             It's included for FHIR compatibility. 
             
@@ -219,7 +247,7 @@ paths:
               value: 'https://fhir.nhs.uk/Id/ods-organization-code|G81086'
         - in: query
           name: lastChangeDate
-          description: The date that the organisation record was last modified by ODS. Support greater than, less and equal to. can be compounded.
+          description: The date that the organisation record was last modified by ODS. Supports greater than, less and equal to. Can be compounded.
           required: false
           schema:
             type: string
@@ -236,7 +264,7 @@ paths:
         - in: query
           name: name
           description: |
-            The start of the organisation's name. For example, `Leeds` would match 'Leeds Chest Clinic' but not 'South Leeds Clinical Assessment Service'.
+            The start of the organisation's name. For example, `Leeds` would match `Leeds Chest Clinic` but not `South Leeds Clinical Assessment Service`.
             
             To search anywhere in the organisation's name, use `name:contains`. To search for an exact match, use `name:exact`.
             
@@ -253,7 +281,7 @@ paths:
         - in: query
           name: name:contains
           description: |
-            Any part of the organisation's name. For example, `Leeds` would match 'Leeds Chest Clinic' and 'South Leeds Clinical Assessment Service'.
+            Any part of the organisation's name. For example, `Leeds` would match `Leeds Chest Clinic` and `South Leeds Clinical Assessment Service`.
             
             Not case sensitive.
             
@@ -392,19 +420,19 @@ paths:
         - in: query
           name: roleCode
           description: |
-            The organisation's role, based on the ODS organisation role code system.
+            The organisation's role, based on the `ODSOrganisationRole` CodeSystem.
             
             An organisation in ODS can have one or many roles.
             
-            To exclude organisations with a specific role use roleCode:not 
+            To exclude organisations with a specific role use `roleCode:not` 
 
-            To search for organisations that have multiple roles (like an 'AND' operator), include the `rolecode` query parameter multiple times. 
+            To search for organisations that have multiple roles (like an 'AND' operator), include the `roleCode` query parameter multiple times. 
             
             To search for organisations that have one of several roles (like an 'OR' operator), use a comma separator. 
             
             You may combine 'AND' and 'OR' searches.
             
-            To Discover whether a role is primary or non-primary, refer to the ODSOrganisationRelationship CodeSystem 
+            To discover whether a role is primary or non-primary, refer to the `ODSOrganisationRelationship` CodeSystem 
           required: false
           schema:
             type: string
@@ -419,7 +447,7 @@ paths:
               summary: "A search for multiple roles (like an 'OR' operator):"
               value: 'RO197,RO198'
             coumpound-roles:
-              summary: "A search for multiple roles (like an 'AND' operator):"
+              summary: "A search for combined roles (like an 'AND' operator):"
               value: 'roleCode=RO197&roleCode=RO7'
         - in: query
           name: roleCode:not
@@ -438,16 +466,16 @@ paths:
         - in: query
           name: activeRoleCode
           description: |
-            Searches only active roles within the ‘ODS Organisation Role’ CodeSystem 
+            Searches only active roles within the `ODSOrganisationRole` CodeSystem 
 
-            To exclude organisations with a specific role use activeRoleCode:not 
-            To search for organisations that have multiple roles (like an 'AND' operator), include the `rolecode` query parameter multiple times. 
+            To exclude organisations with a specific role use `activeRoleCode:not` 
+            To search for organisations that have multiple roles (like an 'AND' operator), include the `activeRoleCode` query parameter multiple times. 
             
             To search for organisations that have one of several roles (like an 'OR' operator), use a comma separator. 
             
             You may combine 'AND' and 'OR' searches.
             
-            To Discover whether a role is primary or non-primary, refer to the ODSOrganisationRelationship CodeSystem 
+            To discover whether a role is primary or non-primary, refer to the `ODSOrganisationRelationship` CodeSystem 
           required: false
           schema:
             type: string
@@ -1132,6 +1160,22 @@ paths:
       description: |
         ## Overview
         Use this endpoint to search for relationship records. Most commonly you would use this endpoint to get all the relationships for a given organisation, based on its ODS code. 
+        
+        For relationships, this API returns the following details: 
+
+          * related organisation ODS code 
+          * relationship type and relationship name 
+          * relationship legal start and end dates 
+          * relationship operational start and end dates
+          
+        you can search using various combinations of:
+        
+          * Primary-Organisation - known within the ORD products as the Source Organisation
+          * Participating-Organisation - known within the ORD products as the Target Organisation
+          * relationship status 
+          
+        It is also possible to return the relevant Organization Resources in these searches using the `_include` parameter
+          
       parameters:
         - in: query
           name: _id
@@ -1159,7 +1203,7 @@ paths:
           description: |
             The ‘Target’ or related organisation.  
 
-            Referred to as the TargetOrganisation in the ORD schema 
+            Referred to as the Target Organisation in the ORD schema 
             Must be a valid Organisation code with relationships to return results 
           required: false
           schema:
@@ -1182,11 +1226,14 @@ paths:
         - in: query
           name: _include
           description: |
-            enables you return related resources.  
+            Enables you return related resources.  
 
             OrganizationAffiliation:primary-organization will include Organization resource records for the ‘Source’ Organisations in the search results 
             
             OrganizationAffiliation:participating-organization will include Organization resource records for all the ‘Target’ Organisations in the search results 
+            
+            you can include both primary and participating organization resources by including multiple `_include` parameters
+            
           required: false
           schema:
             type: string
@@ -1561,6 +1608,23 @@ paths:
       description: |
         ## Overview
         Use this endpoint to get details for a single organisation based on its ODS code. Site codes which are supported for certain organisations can also be accessed here, there is not a separate endpoint for sites. A FHIR Organization resource will be provided when a valid id has been provided. 
+        
+        
+        ## What is Included?          
+        This API returns the following details for an organisation: 
+
+          * organisation - ODS code, name, last change date, status if active or inactive , record class (organisation or site), record use type; A complete record or a reduced record included solely for referential integrity.
+          * address - house or flat number, line 1, line 2, line 3, town, postcode, Unique Property Reference Number (UPRN) and country
+          * contacts - website and telephone (where available)
+          * roles - primary and non-primary roles including legal and operational start and end dates 
+
+
+        To access a richer Organisation dataset, use the ods-organization-code CodeSystem, when searching the CodeSystem resource with an ODS Code, in addition to the above, the following will also be returned: 
+
+          * organisation –Assigning Authority
+          * Related entities, the current related entity of any supported relationships
+          * succession - any predecessors and/or successors and a flag to indicate the successor has also been succeeded
+          * geographic - the appropriate mapping from the postcode dataset including Local Authority, Integrated Care Board or Lower Super Output Area (LSOA) 
         
       parameters:
         - in: path
@@ -2113,16 +2177,16 @@ paths:
           * Organization-role-deletion
           * Organization-succession-deletion
           
-          ## Organization-deletion
+          #### Organization-deletion
           From time to time it is posible that we create or receive orgnisations which are created in error and removed from the source data. when this occurs there is no updates to the record, it is simply no longer available. to inform users when Organisations have been deleted, we have used the List resource to provide the ODS Code of the records which have been deleted so that you may removed them from any local copies you may be maintaining.
           
-          ## OrganizationAffilliation-deletion
+          #### OrganizationAffilliation-deletion
           in the unlikely event that a relationship must be deleted rather then given an end date, the RelationshipID will be provided in this List resource. 
             
-          ## Organization-role-deletion
+          #### Organization-role-deletion
           In the unlikely event that a role is deleted, rather than given an end date, the roleID will be provided in this list resource. As the role forms part of the Organization Resource you may not need to take action other than to verify the role was intentionally removed.
           
-          ## Organization-succession-deletion
+          #### Organization-succession-deletion
           In the unlikely event that the succession is removed from an organisation, the Organisation's ODS Code and that of it's successor will be published in this list resource. As the successor and predecessor are properties of the ods-organization-code CodeSystem, you may not need to take action if you are maintaining a local copy of the CodeSystem other than to verify the succession was intentionally removed.  
 
       parameters:
@@ -2220,13 +2284,19 @@ paths:
                 
   /CodeSystem:
     get:
-      summary: Get Practitioner Details
+      summary: Search for additional instance and reference data
       
-      operationId: get-single-practitioner
+      operationId: search-codesystem
       description: |
         ## Overview 
 
-        Use this endpoint to access a single practitioner record from the practitioner CodeSystem. Practitioner CodeSystem requires elevated permissions. 
+        Use this endpoint to access a range of information contained in CodeSystems to meet your needs. We have a range of different CodeSystems that contain regularly changing data such as organisations, practitioners and relationships plus more traditional reference based CodeSystems.
+        
+        ## Organisation Data
+        
+        ods-organization-code
+        
+        This CodeSystem has 51 properties 
       
       parameters:
         - in: query
