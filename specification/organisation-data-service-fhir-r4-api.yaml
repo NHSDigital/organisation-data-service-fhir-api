@@ -188,16 +188,12 @@ paths:
         You can search for information about an organisation using one or more of their: 
 
           * ODS code 
-          * last Change date 
+          * last change date 
           * name 
           * active or inactive status 
           * address, city or postcode  
           * organisation's primary role using RoleID, such as RO197 (NHS Trust) or RO167 (Optical Site) 
           * organisation's non-primary role using RoleID, such as RO7 (Hospice) or RO318 (Integrated Care Board) 
-        ### CodeSystem only  
-          * related organisations using a Relationship ID such as RE4 (commissioned by) or RE6 (operated by) 
-          * presence of Successor or Predecessor information 
-          * geographic values such as Local Authority boundary, Integrated Care Board boundary or Lower Super Output Area (LSOA) 
           
         This API returns the following details for an organisation: 
 
@@ -514,7 +510,7 @@ paths:
             example: 2000
       responses:
         '200':
-          description: Valid request that returns organization history found that match the search criteria (which may be 0).
+          description: Valid request that returns a FHIR Organization resource(s) that match the search criteria (which may be 0).
           content:
             application/fhir+json:
               example:
@@ -1253,7 +1249,7 @@ paths:
             enum: [count]
       responses:
         '200':
-          description: Valid request that returns organization history found that match the search criteria (which may be 0).
+          description: Valid request that returns any FHIR OrganizationAffiliation resources that match the search criteria (which may be 0).
           content:
             application/fhir+json:
               example:
@@ -1610,7 +1606,7 @@ paths:
         Use this endpoint to get details for a single organisation based on its ODS code. Site codes which are supported for certain organisations can also be accessed here, there is not a separate endpoint for sites. A FHIR Organization resource will be provided when a valid id has been provided. 
         
         
-        ## What is Included?          
+        ## What is included    
         This API returns the following details for an organisation: 
 
           * organisation - ODS code, name, last change date, status if active or inactive , record class (organisation or site), record use type; A complete record or a reduced record included solely for referential integrity.
@@ -1622,7 +1618,7 @@ paths:
         To access a richer Organisation dataset, use the ods-organization-code CodeSystem, when searching the CodeSystem resource with an ODS Code, in addition to the above, the following will also be returned: 
 
           * organisation –Assigning Authority
-          * Related entities, the current related entity of any supported relationships
+          * related entities, the current related entity of any supported relationships
           * succession - any predecessors and/or successors and a flag to indicate the successor has also been succeeded
           * geographic - the appropriate mapping from the postcode dataset including Local Authority, Integrated Care Board or Lower Super Output Area (LSOA) 
         
@@ -1979,7 +1975,7 @@ paths:
             example: '617400'                            
       responses:
         '200':
-          description: Valid request that returns a FHIR OrganisationAffiliation resource 
+          description: Valid request that returns a FHIR OrganizationAffiliation resource 
           content:
             application/fhir+json:
               example:
@@ -2282,7 +2278,7 @@ paths:
                   </entry>
                 </List>
                 
-  /CodeSystem:
+  /CodeSystem/:
     get:
       summary: Search for additional instance and reference data
       
@@ -2293,10 +2289,40 @@ paths:
         Use this endpoint to access a range of information contained in CodeSystems to meet your needs. We have a range of different CodeSystems that contain regularly changing data such as organisations, practitioners and relationships plus more traditional reference based CodeSystems.
         
         ## Organisation Data
+        ### https://fhir.nhs.uk/Id/ods-organization-code
         
-        ods-organization-code
+        In addition to the data available through the FHIR Organization resource we also have a CodeSystem containing the following:
         
+          * related organisations using a Relationship ID such as RE4 (commissioned by) or RE6 (operated by) 
+          * presence of Successor or Predecessor information 
+          * geographic values such as Local Authority boundary, Integrated Care Board boundary or Lower Super Output Area (LSOA) 
+
+      
         This CodeSystem has 51 properties 
+        
+        Properties
+        
+        
+        | Name        | Operators | Type      | Description            | Example     |
+            |-------- | ---------    | -------   | ------------           | ---------- |
+        |addressLine1     |in, =, not-in, regex   |string   | Postal Address Line 1    |2 BUTLER STREET WEST |
+        |opStartDate      |=   |dateTime   | The date on which an organisation becomes effective, cannot be later that Legal Start Date |2023-02-20  |
+        |LSOA11       | =, in, not-in         | Coding  | Lower Super Output Area 2011 The ONS Identifier for geographic 2011 LSOA, derived from the organisation’s postcode. Names for the LSOAs can be found in the geography-name CodeSystem  | E01028563 |
+        | RE4 | =, exists, in, not-in |code | Is Commissioned by. Contains the Organisation Code of the related organisation. Populated for active organisations only | QJK| 
+        
+      
+        ## Reference Data
+        ### https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole
+        
+        Every Organisation has at least one role, a Primary role. it may also have additional roles which provide more information aboue the organisation function or purpose.
+        
+        The full list of role codes is contained in this CodeSystem and can be retreived in full or 
+        individual role codes can be returned or validated.
+        
+        This CodeSystem has 1 additional Property: `primaryRole` which contains a true/false value if the role is a primary role or not.
+        
+        
+        
       
       parameters:
         - in: query
@@ -2306,11 +2332,26 @@ paths:
           required: false
           schema:
             type: string
-            example: 'https://digital.nhs.uk/services/organisation-data-service/CodeSystem/practitioner'      
+          examples: 
+              Organisation-Data: 
+                summary: ods-organization-code
+                value: 'https://fhir.nhs.uk/Id/ods-organization-code'
+              practitioner:
+                summary: practitioner
+                value: 'https://digital.nhs.uk/services/organisation-data-service/CodeSystem/practitioner'
+              ODSOrganisationRole: 
+                summary: ODSOrganisationRole
+                value: 'https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole'
+              ODSRecordUseType: 
+                summary: ODSRecordUseType
+                value: 'https://fhir.nhs.uk/England/CodeSystem/England-ODSRecordUseType'
+              ODSRecordUseClass: 
+                summary: ODSRecordClass
+                value: 'https://fhir.nhs.uk/England/CodeSystem/England-ODSRecordUseType'
         - in: query
-          name: id
+          name: code
           description: |
-            The practitioner's ID 
+            The code of the concept stored within the CodeSystem  
           required: false
           schema:
             type: string
@@ -2623,3 +2664,972 @@ paths:
             | HTTP Code   | issue.severity  | issue.code    | issue.details.code        | issue.details.display |
             |------------ |---------------- |-----------    |-------------------------- |---------------------- |
             | 404         | error           | not-found     | NO_RECORD_FOUND           | No record found |
+            
+            
+  /ods-organization-code...:
+    get:
+      summary: Get a single organisation from the ods-organization-code CodeSystem
+    
+      operationId: get-ods-organization-code-concept
+      description: |
+        ## Overview
+        If you want to return a single concept, an organisation record, from this CodeSystem you will need to perform a `$lookup` operation as the CodeSystem is updated daily with new data and the name contains the date.
+        
+        For example:
+        
+        `{{base-url}}/CodeSystem/$lookup?system=https://fhir.nhs.uk/Id/ods-organization-code&code=G81086&property=*`
+        
+      parameters:
+        - in: query
+          name: system
+          description: |
+            The url of the CodeSystem.
+          required: false
+          schema:
+            type: string
+            example: 'https://fhir.nhs.uk/Id/ods-organization-code'
+        - in: query
+          name: code
+          description: |
+            The Organisation's ODS Code.
+          required: false
+          schema:
+            type: string
+            example: 'G81086'
+        - in: query
+          name: property
+          description: |
+            any of the available properties held within the CodeSystem. Multiple Properties can be returned by including the paramter multiple times.
+            Use `*` to retreive all properties.
+          required: false
+          schema:
+            type: string
+          examples: 
+            return-all:
+              summary: return all properties
+              value: '*'
+            return-one:
+              summary: return a single property
+              value: opStartDate
+              
+      responses:
+        '200':
+          description: Valid request that returns a single ValueSet for the specied ID.
+          content:
+            application/json:
+              example:
+                {
+    "resourceType": "Parameters",
+    "parameter": [
+        {
+            "name": "code",
+            "valueCode": "G81086"
+        },
+        {
+            "name": "display",
+            "valueString": "BIRD-IN-EYE SURGERY"
+        },
+        {
+            "name": "name",
+            "valueString": "ODS Organisation"
+        },
+        {
+            "name": "system",
+            "valueUri": "https://fhir.nhs.uk/Id/ods-organization-code"
+        },
+        {
+            "name": "version",
+            "valueString": "2024-03-07"
+        },
+        {
+            "name": "designation",
+            "part": [
+                {
+                    "name": "use",
+                    "valueCoding": {
+                        "system": "http://terminology.hl7.org/CodeSystem/designation-usage",
+                        "code": "display"
+                    }
+                },
+                {
+                    "name": "value",
+                    "valueString": "BIRD-IN-EYE SURGERY"
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "status"
+                },
+                {
+                    "name": "value",
+                    "valueCode": "active"
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "RE4"
+                },
+                {
+                    "name": "value",
+                    "valueCode": "97R"
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "RE6"
+                },
+                {
+                    "name": "value",
+                    "valueCode": "97R"
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "RE8"
+                },
+                {
+                    "name": "value",
+                    "valueCode": "U36842"
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "inactive"
+                },
+                {
+                    "name": "value",
+                    "valueBoolean": false
+                },
+                {
+                    "name": "valueBoolean",
+                    "valueBoolean": false
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "country"
+                },
+                {
+                    "name": "valueString",
+                    "valueString": "ENGLAND"
+                },
+                {
+                    "name": "value",
+                    "valueString": "ENGLAND"
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "opStartDate"
+                },
+                {
+                    "name": "valueDateTime",
+                    "valueDateTime": "1974-04-01"
+                },
+                {
+                    "name": "value",
+                    "valueDateTime": "1974-04-01"
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "SMHPC CT4"
+                },
+                {
+                    "name": "valueCoding",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "B0N9F"
+                    }
+                },
+                {
+                    "name": "value",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "B0N9F"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "LSOA11"
+                },
+                {
+                    "name": "valueCoding",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "E01021221"
+                    }
+                },
+                {
+                    "name": "value",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "E01021221"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "uprn"
+                },
+                {
+                    "name": "valueString",
+                    "valueString": "10091054340"
+                },
+                {
+                    "name": "value",
+                    "valueString": "10091054340"
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "town"
+                },
+                {
+                    "name": "valueString",
+                    "valueString": "UCKFIELD"
+                },
+                {
+                    "name": "value",
+                    "valueString": "UCKFIELD"
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "postcode"
+                },
+                {
+                    "name": "valueString",
+                    "valueString": "TN22 5AW"
+                },
+                {
+                    "name": "value",
+                    "valueString": "TN22 5AW"
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "telephone"
+                },
+                {
+                    "name": "valueString",
+                    "valueString": "01825 763196"
+                },
+                {
+                    "name": "value",
+                    "valueString": "01825 763196"
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "NHSER"
+                },
+                {
+                    "name": "valueCoding",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "Y59"
+                    }
+                },
+                {
+                    "name": "value",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "Y59"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "EW"
+                },
+                {
+                    "name": "valueCoding",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "E05011661"
+                    }
+                },
+                {
+                    "name": "value",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "E05011661"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "SMHPC AS"
+                },
+                {
+                    "name": "valueCoding",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "H3F5A"
+                    }
+                },
+                {
+                    "name": "value",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "H3F5A"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "name"
+                },
+                {
+                    "name": "valueString",
+                    "valueString": "BIRD-IN-EYE SURGERY"
+                },
+                {
+                    "name": "value",
+                    "valueString": "BIRD-IN-EYE SURGERY"
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "PCO"
+                },
+                {
+                    "name": "valueCoding",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "97R"
+                    }
+                },
+                {
+                    "name": "value",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "97R"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "role"
+                },
+                {
+                    "name": "valueCoding",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole",
+                        "code": "RO177"
+                    }
+                },
+                {
+                    "name": "value",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole",
+                        "code": "RO177"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "role"
+                },
+                {
+                    "name": "valueCoding",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole",
+                        "code": "RO76"
+                    }
+                },
+                {
+                    "name": "value",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole",
+                        "code": "RO76"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "SMHPC AED"
+                },
+                {
+                    "name": "valueCoding",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "R7G8O"
+                    }
+                },
+                {
+                    "name": "value",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "R7G8O"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "primaryRole"
+                },
+                {
+                    "name": "valueCoding",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole",
+                        "code": "RO177"
+                    }
+                },
+                {
+                    "name": "value",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole",
+                        "code": "RO177"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "assigningAuth"
+                },
+                {
+                    "name": "valueString",
+                    "valueString": "NHS BUSINESS SERVICES AUTHORITY"
+                },
+                {
+                    "name": "value",
+                    "valueString": "NHS BUSINESS SERVICES AUTHORITY"
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "CA"
+                },
+                {
+                    "name": "valueCoding",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "E56000012"
+                    }
+                },
+                {
+                    "name": "value",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "E56000012"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "address2"
+                },
+                {
+                    "name": "valueString",
+                    "valueString": "FRAMFIELD ROAD"
+                },
+                {
+                    "name": "value",
+                    "valueString": "FRAMFIELD ROAD"
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "address1"
+                },
+                {
+                    "name": "valueString",
+                    "valueString": "UCKFIELD COMMUNITY HOSPITAL"
+                },
+                {
+                    "name": "value",
+                    "valueString": "UCKFIELD COMMUNITY HOSPITAL"
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "lastChangeDate"
+                },
+                {
+                    "name": "valueDateTime",
+                    "valueDateTime": "2023-08-22"
+                },
+                {
+                    "name": "value",
+                    "valueDateTime": "2023-08-22"
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "ICB"
+                },
+                {
+                    "name": "valueCoding",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "QNX"
+                    }
+                },
+                {
+                    "name": "value",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "QNX"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "GOR"
+                },
+                {
+                    "name": "valueCoding",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "J"
+                    }
+                },
+                {
+                    "name": "value",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "J"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "PC"
+                },
+                {
+                    "name": "valueCoding",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "E14001023"
+                    }
+                },
+                {
+                    "name": "value",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "E14001023"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "LA"
+                },
+                {
+                    "name": "valueCoding",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "815"
+                    }
+                },
+                {
+                    "name": "value",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/geography-name",
+                        "code": "815"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "legStartDate"
+                },
+                {
+                    "name": "valueDateTime",
+                    "valueDateTime": "1974-04-01"
+                },
+                {
+                    "name": "value",
+                    "valueDateTime": "1974-04-01"
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "orgRecordClass"
+                },
+                {
+                    "name": "valueCoding",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSRecordClass",
+                        "code": "RC1"
+                    }
+                },
+                {
+                    "name": "value",
+                    "valueCoding": {
+                        "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSRecordClass",
+                        "code": "RC1"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "property",
+            "part": [
+                {
+                    "name": "code",
+                    "valueCode": "refOnly"
+                },
+                {
+                    "name": "valueBoolean",
+                    "valueBoolean": false
+                },
+                {
+                    "name": "value",
+                    "valueBoolean": false
+                }
+            ]
+        }
+    ]
+}
+
+    post:
+      summary: Search for organisations from the ods-organization-code CodeSystem
+    
+      operationId: search-ods-organization-code
+      description: |
+        ## Overview
+        To retrieve records from ods-organization-code CodeSystem, you will need to perform a 'POST' operation, in which you will provide the details of the CodeSystem you are searching, along with any filters to be applied and properties you wish to include in the results.
+        
+        When you make a 'POST' operation, you perform an expansion on a CodeSystem and provide a requestBody. The endpoint will return a sucessful (200) response code along with the search results, which may be an empty array if no records match your criteria. or an unsuccesful (4xx/5xx) response.
+        
+        All the parameters below can be used as a property in the filter section of the requestBody as shown in the example below 
+      
+      parameters:
+        - in: query
+          name: address1
+          description: |
+            The organisation's address line 1.
+          required: false
+          schema:
+            type: string
+            example: '2 BUTLER STREET WEST'                            
+        - in: query
+          name: LSOA11
+          description: |
+            Lower Super Output Area 2011 
+
+            The ONS Identifier for geographic 2011 LSOA, derived from the organisation’s postcode 
+
+            Names for the LSOAs can be found in the geography-name CodeSystem.
+          required: false
+          schema:
+            type: string
+            example: 'E01028563'
+        - in: query
+          name: RE4
+          description: |
+            Is Commissioned by 
+
+            Contains the Organisation Code of the related organisation. 
+
+            Populated for active organisations only.
+          required: false
+          schema:
+            type: string
+            example: 'QJK'
+
+        
+      
+      requestBody:
+        content:
+          application/fhir+json:
+            example:
+              {
+    "resourceType": "Parameters",
+    "parameter": [
+        {
+            "name": "valueSet",
+            "resource": {
+                "resourceType": "ValueSet",
+                "compose": {
+                    "inactive": true,
+                    "include": [
+                        {
+                            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                            "filter": [
+                                {
+                                    "property": "lastChangeDate",
+                                    "op": "=",
+                                    "value": "gt2024-02-01"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "activeOnly",
+            "valueBoolean": false
+        },
+        {
+            "name": "property",
+            "valueString": "primaryRole"
+        },
+        {
+            "name": "property",
+            "valueString": "country"
+        },
+        {
+            "name": "count",
+            "valueInteger": "2"
+        }
+    ]
+}
+        
+      
+        
+      responses:
+        '200':
+          
+          description:  a valid 
+          content:
+            application/fhir+json:
+              example:
+                {
+    "resourceType": "ValueSet",
+    "expansion": {
+        "identifier": "urn:uuid:7799a8c4-2d2a-4d74-b647-2d50aad98904",
+        "timestamp": "2024-03-25T14:42:24+00:00",
+        "total": 4725,
+        "offset": 0,
+        "parameter": [
+            {
+                "name": "version",
+                "valueUri": "https://fhir.nhs.uk/Id/ods-organization-code|2024-03-07"
+            },
+            {
+                "name": "used-codesystem",
+                "valueUri": "https://fhir.nhs.uk/Id/ods-organization-code|2024-03-07"
+            },
+            {
+                "name": "activeOnly",
+                "valueBoolean": false
+            },
+            {
+                "name": "count",
+                "valueInteger": 2
+            }
+        ],
+        "contains": [
+            {
+                "extension": [
+                    {
+                        "url": "http://hl7.org/fhir/5.0/StructureDefinition/extension-ValueSet.expansion.contains.property",
+                        "extension": [
+                            {
+                                "url": "code",
+                                "valueCode": "primaryRole"
+                            },
+                            {
+                                "url": "value",
+                                "valueCoding": {
+                                    "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole",
+                                    "code": "RO104"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/5.0/StructureDefinition/extension-ValueSet.expansion.contains.property",
+                        "extension": [
+                            {
+                                "url": "code",
+                                "valueCode": "country"
+                            },
+                            {
+                                "url": "value",
+                                "valueString": "ENGLAND"
+                            }
+                        ]
+                    }
+                ],
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "code": "AT32",
+                "display": "FORGET ME NOT CARING LTD"
+            },
+            {
+                "extension": [
+                    {
+                        "url": "http://ontoserver.csiro.au/profiles/expansion",
+                        "extension": [
+                            {
+                                "url": "inactive",
+                                "valueBoolean": true
+                            }
+                        ]
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/5.0/StructureDefinition/extension-ValueSet.expansion.contains.property",
+                        "extension": [
+                            {
+                                "url": "code",
+                                "valueCode": "primaryRole"
+                            },
+                            {
+                                "url": "value",
+                                "valueCoding": {
+                                    "system": "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole",
+                                    "code": "RO172"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/5.0/StructureDefinition/extension-ValueSet.expansion.contains.property",
+                        "extension": [
+                            {
+                                "url": "code",
+                                "valueCode": "country"
+                            },
+                            {
+                                "url": "value",
+                                "valueString": "ENGLAND"
+                            }
+                        ]
+                    }
+                ],
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "inactive": true,
+                "code": "AT9",
+                "display": "SOUTH EAST LAMBETH HEALTH PARTNERSHIP"
+            }
+        ]
+    }
+}
