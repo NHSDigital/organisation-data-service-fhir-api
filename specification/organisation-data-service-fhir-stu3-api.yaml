@@ -374,7 +374,7 @@ paths:
             example: 'false'
         - in: query
           name: _count
-          description: Number of results to return. The maximum is 20.
+          description: Number of results to return. Defaulted to first 20 records.
           required: false
           schema:
             type: string
