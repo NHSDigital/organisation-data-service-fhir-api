@@ -3408,11 +3408,11 @@ paths:
                   "publisher": "NHS Digital",
                   "contact": [
                     {
-                      "name": "National Helpdesk Exeter",
+                      "name": "National Service Desk",
                       "telecom": [
                         {
                           "system": "email",
-                          "value": "exeter.helpdesk@nhs.net",
+                          "value": "ssd.nationalservicedesk@nhs.net",
                           "use": "work"
                         },
                         {
