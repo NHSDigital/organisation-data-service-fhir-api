@@ -83,11 +83,7 @@ info:
     
     ## API status and roadmap
     This API is [under review for deprecation](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses).
-    
-    To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?order=popular&filter=allexceptdone&tag=ods-api#controls).
-    
-    If you have any other queries, [contact us](https://digital.nhs.uk/developer/help-and-support).
-    
+         
     ## Service level
     This API is a bronze service, meaning it is operational and supported only during business hours (8am to 6pm), Monday to Friday excluding bank holidays.
     
@@ -148,6 +144,9 @@ info:
     
     ## Onboarding
     This API is open-access, and there is no onboarding process or assurance required.
+
+    ## Contact us
+    For help and support connecting to our APIs and to join our developer community, see [Help and support building healthcare software](https://digital.nhs.uk/developer/help-and-support).
     
 servers:
   - url: 'https://uat.directory.spineservices.nhs.uk/STU3/'
