@@ -22,7 +22,7 @@ info:
           <div class="nhsd-m-emphasis-box__content-box">
             <p class="nhsd-t-heading-s nhsd-t-word-break" id="emphasis-emphasis-30709f1f" data-uipath="website.contentblock.emphasis.heading">Downtime notice</p>
                 <div data-uipath="website.contentblock.emphasis.content" class="nhsd-t-word-break">
-                    <p class="nhsd-t-body">Please be advised that this API will be temporarily unavailable from 15th to 19th September 2025. For assistance during this period, please contact ODS through the ‘ODS – General Enquiries and Requests’ form on the <a href="https://digital.nhs.uk/services/organisation-data-service">NHS National IT Customer Support Portal</a>. To access the form, you'll need to:</p></div>
+                    <p class="nhsd-t-body">Please be advised that this API will be temporarily unavailable from 15 to 19 September 2025. For assistance during this period, please contact ODS through the ‘ODS General Enquiries and Requests’ form on the <a href="https://digital.nhs.uk/services/organisation-data-service">NHS National IT Customer Support Portal</a>. To access the form, you'll need to:</p></div>
                     
       1. Log into <a href="https://digital.nhs.uk/services/organisation-data-service">NHS National IT Customer Support Portal</a>.
       
@@ -32,9 +32,8 @@ info:
       
       4. Select the subcategory Organisation Data Service (ODS).
       
-      5. Select the ODS <a href="https://www.support.digitalservices.nhs.uk/csm">General Enquiries and Requests form</a> when submitting the form, please ensure to select ODS API – STU in the Service Offering field.
+      5. Select the ODS <a href="https://www.support.digitalservices.nhs.uk/csm">General Enquiries and Requests form</a> when submitting the form, please ensure to select ODS API STU in the Service Offering field.
       We apologise for any convenience during this period.
-          
             </div>
         </div>
     </div> 
